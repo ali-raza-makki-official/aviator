@@ -213,6 +213,8 @@ app.get('/docs', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.
 app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 app.get('/contect', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
+app.get('/predictor', (req, res) => res.sendFile(path.join(__dirname, 'public', 'predictor.html')));
+app.get('/hack', (req, res) => res.sendFile(path.join(__dirname, 'public', 'predictor.html')));
 const sendUnauthorizedPage = (res) => {
   return res.status(401).send(`
 <!DOCTYPE html>

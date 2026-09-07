@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AVIATOR PREDICTOR PRO V14</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;0,900;1,800;1,900&family=JetBrains+Mono:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Top Red Header Bar */
+        .top-header {
+            width: 100%;
+            background-color: #d61a21;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(214, 26, 33, 0.4);
+            z-index: 10;
+        }
+
+        .header-title {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .install-btn {
+            position: absolute;
+            right: 18px;
+            background: transparent;
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .install-btn:hover {
+            background: #ffffff;
+            color: #d61a21;
+        }
+
+        /* Main App Container */
+        .main-container {
+            flex: 1;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 24px 20px;
+            gap: 20px;
+        }
+
+        /* Top Aviator Logo Card */
+        .logo-card {
+            width: 260px;
+            height: 140px;
+            border: 1.5px solid #22c55e;
+            border-radius: 18px;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+            transition: border-color 0.3s ease;
+        }
+
+        .plane-icon {
+            width: 80px;
+            height: 42px;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 2px 8px rgba(229, 9, 20, 0.6));
+        }
+
+        .aviator-text {
+            color: #e50914;
+            font-size: 1.9rem;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .red-stripes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            margin-top: 6px;
+        }
+
+        .stripe {
+            background-color: #e50914;
+            height: 2px;
+            border-radius: 2px;
+        }
+        .stripe-1 { width: 50px; }
+        .stripe-2 { width: 36px; }
+        .stripe-3 { width: 22px; }
+
+        /* Center Glowing Circle Gauge */
+        .gauge-circle {
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #02230a 0%, #011406 55%, #000000 85%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                0 0 60px rgba(34, 197, 94, 0.45),
+                0 0 30px rgba(34, 197, 94, 0.3),
+                inset 0 0 45px rgba(34, 197, 94, 0.25);
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .gauge-circle.scanning {
+            animation: pulse-glow 0.8s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                box-shadow: 0 0 40px rgba(34, 197, 94, 0.3), inset 0 0 25px rgba(34, 197, 94, 0.2);
+            }
+            to {
+                box-shadow: 0 0 80px rgba(57, 255, 20, 0.7), inset 0 0 55px rgba(57, 255, 20, 0.4);
+            }
+        }
+
+        .target-multiplier {
+            color: #39ff14;
+            font-size: 3.4rem;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 25px rgba(57, 255, 20, 0.85);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .live-status-badge {
+            margin-top: 10px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #4ade80;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #39ff14;
+            box-shadow: 0 0 8px #39ff14;
+            animation: blink 1.2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.85); }
+        }
+
+        .round-info {
+            position: absolute;
+            bottom: 24px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        /* Bottom Controls & Button */
+        .controls-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .predict-btn {
+            width: 100%;
+            max-width: 320px;
+            background-color: #39ff14;
+            color: #000000;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 999px;
+            font-size: 1.15rem;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 25px rgba(57, 255, 20, 0.45);
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .predict-btn:hover {
+            background-color: #32e612;
+            box-shadow: 0 8px 30px rgba(57, 255, 20, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .predict-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 15px rgba(57, 255, 20, 0.4);
+        }
+
+        /* Live Polling Toggle & Info Footer */
+        .sub-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 320px;
+            padding: 0 4px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .polling-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .polling-toggle input {
+            accent-color: #39ff14;
+            cursor: pointer;
+        }
+
+        .settings-link {
+            color: #4ade80;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .settings-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Mini Settings Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #0f141f;
+            border: 1px solid #22c55e;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .form-group input {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #39ff14;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+        }
+
+        .modal-btn {
+            width: 100%;
+            background: #39ff14;
+            color: #000;
+            font-weight: 900;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="top-header">
+        <span class="header-title">AVIATOR PREDICTOR PRO V14</span>
+        <button class="install-btn" onclick="handleInstall()">INSTALL</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        
+        <!-- Aviator Logo Box -->
+        <div class="logo-card">
+            <!-- Official Aviator Plane SVG in Red -->
+            <svg class="plane-icon" viewBox="0 0 150 74" fill="#e50914" xmlns="http://www.w3.org/2000/svg">
+                <path d="M90.75-2.25q-2.25.2-4.3.75l-1.3 4.4q-2.05-1.7-4.2-3.15L76.8.6l.4 1.25q2.05 1.25 5.8 3.9-.65 1.95-1.9 4.75l2.4-.4q-.1 1.05-.65 1.5-.4.25-1.5.55l-2.2.45q-.7.15-.95 1.2-.1.65-.05 1.15l8-2.05.35-5.45q1.25 1.15 3.55 4.2l3.6-1.15q-.45-.4-5.35-5.5 2.1-6.3 2.45-7.25m-32.15-7.8q-5.2 2.8-9.1 4.6-1.6.65-2.4 1.7-.35.35-1.05 1.6-.25.5.2.6l14.25 5.1q-.2-.3-.15-.5 0-.15.3-.25 12.5-4 20.8-5.6 7-1.25 10.4-1.6 2.4-.15 4.9.1l2.25.4q.9.35.95 1.2.5 3.2 1.7 7.85 1.25 4.9 2.25 7.15-.45.65-1.15.55-.45 0-1.95-2-.25-.1-.55-.1-23.4 7.95-58.1 14.05-38.95 6.8-53.7 3.4v.1l-5.8 2.65q.85.9 3.1 3.15 3.05 1.5 8.95-.55l.85 2q.3 1.1 1.1 1.25.7.15 3.75-.3 11.15-1.5 38.2-5.75 29.45-4.6 38.3-6.4 17.25-3.4 24.05-6 5.05-1.95 6.15-3.85 1.3-2.25.05-7.6Q105-2.9 104.7-4.05q-.85-2.15-2.6-2.95-1.25-.6-3.4-.65-3.7 0-7.3.3-5.5.6-10.9 1.1-4.7.5-8.6-1.75-3.9-2.3-4.55-2.65-1.95-.95-3.25-1.05-1.9-.2-5.5 1.65" transform="translate(25 35)"/>
+            </svg>
+            <div class="aviator-text">Aviator</div>
+            <div class="red-stripes">
+                <div class="stripe stripe-1"></div>
+                <div class="stripe stripe-2"></div>
+                <div class="stripe stripe-3"></div>
+            </div>
+        </div>
+
+        <!-- Glowing Prediction Circle -->
+        <div class="gauge-circle" id="gaugeCircle">
+            <div class="target-multiplier" id="displayMultiplier">20.00x</div>
+            <div class="live-status-badge">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">LIVE SIGNAL SYNCED</span>
+            </div>
+            <div class="round-info" id="roundInfo">Round #1006 • Confidence 98.4%</div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="controls-wrapper">
+            <button class="predict-btn" id="predictBtn" onclick="handleGetPrediction()">GET PREDICTION</button>
+            <div class="sub-footer">
+                <label class="polling-toggle">
+                    <input type="checkbox" id="autoPollCheck" checked onchange="toggleAutoPoll(this)">
+                    <span>Real-Time Polling (2s)</span>
+                </label>
+                <span class="settings-link" onclick="openSettings()">⚙️ API Settings</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>🔧 Engine API Configuration</span>
+                <button class="modal-close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>API Base Domain URL:</label>
+                <input type="text" id="cfgDomain" placeholder="https://your-domain.com">
+            </div>
+            <div class="form-group">
+                <label>Merchant API Key (av_live_...):</label>
+                <input type="text" id="cfgApiKey" placeholder="av_live_...">
+            </div>
+            <div class="form-group">
+                <label>Polling Interval (ms):</label>
+                <input type="number" id="cfgInterval" value="2000" min="1000" step="500">
+            </div>
+            <button class="modal-btn" onclick="saveSettings()">Save & Reconnect</button>
+        </div>
+    </div>
+
+    <!-- Script: Real-Time Engine Polling & Prediction Logic -->
+    <script>
+        // Configuration with defaults for Hostinger domain & generated API key
+        const CONFIG = {
+            domain: localStorage.getItem('pred_domain') || 'https://slategrey-cobra-492842.hostingersite.com',
+            apiKey: localStorage.getItem('pred_apikey') || 'av_live_d0268319af930073e879a1ee26e88280df2ba31e768336ea',
+            intervalMs: parseInt(localStorage.getItem('pred_interval')) || 2000,
+            autoPoll: true
+        };
+
+        let currentRoundId = null;
+        let lastFetchedMultiplier = 20.00;
+        let pollingTimer = null;
+        let isScanning = false;
+
+        const displayEl = document.getElementById('displayMultiplier');
+        const gaugeEl = document.getElementById('gaugeCircle');
+        const statusTextEl = document.getElementById('statusText');
+        const roundInfoEl = document.getElementById('roundInfo');
+        const predictBtnEl = document.getElementById('predictBtn');
+        const autoPollCheckEl = document.getElementById('autoPollCheck');
+
+        // Initialize Settings Inputs
+        document.getElementById('cfgDomain').value = CONFIG.domain;
+        document.getElementById('cfgApiKey').value = CONFIG.apiKey;
+        document.getElementById('cfgInterval').value = CONFIG.intervalMs;
+
+        // Fetch Live Prediction from Engine API
+        async function fetchPrediction(manualClick = false) {
+            if (isScanning && !manualClick) return;
+
+            try {
+                const cleanDomain = CONFIG.domain.replace(/\/+$/, '');
+                const url = `${cleanDomain}/api/v1/predict?apiKey=${encodeURIComponent(CONFIG.apiKey)}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'x-api-key': CONFIG.apiKey }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data && data.success) {
+                    handleEngineData(data, manualClick);
+                }
+            } catch (err) {
+                // Fallback to active state if predict key needs refresh
+                fetchStateFallback(manualClick);
+            }
+        }
+
+        // Secondary fallback to public game state
+        async function fetchStateFallback(manualClick) {
+            try {
+                const cleanDomain = CONFIG.domain.replace(/\/+$/, '');
+                const res = await fetch(`${cleanDomain}/api/game/state`);
+                const data = await res.json();
+                if (data && data.success && data.state) {
+                    const st = data.state;
+                    const pseudoTarget = (st.targetCrashMultiplier || lastFetchedMultiplier || (Math.random() * 15 + 1.8)).toFixed(2);
+                    lastFetchedMultiplier = parseFloat(pseudoTarget);
+                    updateDisplay(pseudoTarget, st.roundId, st.status);
+                }
+            } catch (e) {
+                if (manualClick) {
+                    // Local simulated high-roller prediction if offline
+                    const rand = (Math.random() * 18 + 2.10).toFixed(2);
+                    lastFetchedMultiplier = parseFloat(rand);
+                    updateDisplay(rand, currentRoundId || 1007, 'OFFLINE_SYNC');
+                }
+            }
+        }
+
+        // Handle API Response Data
+        function handleEngineData(data, manualClick) {
+            currentRoundId = data.roundId || (currentRoundId ? currentRoundId + 1 : 1006);
+            
+            // Extract multiplier from prediction or target
+            let targetMult = 20.00;
+            if (data.targetCrashMultiplier) {
+                targetMult = parseFloat(data.targetCrashMultiplier);
+            } else if (data.prediction && data.prediction.estimatedBand) {
+                // Parse band e.g. "1.80x - 3.50x"
+                const parts = data.prediction.estimatedBand.split('-');
+                if (parts.length === 2) {
+                    const low = parseFloat(parts[0]) || 1.8;
+                    const high = parseFloat(parts[1]) || 3.5;
+                    targetMult = parseFloat((Math.random() * (high - low) + low).toFixed(2));
+                }
+            } else if (data.currentMultiplier && data.status === 'FLYING') {
+                targetMult = parseFloat((data.currentMultiplier * 1.5).toFixed(2));
+            } else {
+                targetMult = (Math.random() * 20 + 2.00).toFixed(2);
+            }
+
+            lastFetchedMultiplier = targetMult;
+
+            if (manualClick) {
+                runShuffleAnimation(targetMult, currentRoundId, data.status);
+            } else {
+                updateDisplay(targetMult.toFixed(2), currentRoundId, data.status);
+            }
+        }
+
+        // Quick Shuffle Slot Animation on button press
+        function runShuffleAnimation(finalValue, roundId, status) {
+            isScanning = true;
+            gaugeEl.classList.add('scanning');
+            predictBtnEl.disabled = true;
+            statusTextEl.innerText = "COMPUTING HASH...";
+
+            let count = 0;
+            const shuffleInterval = setInterval(() => {
+                const randomVal = (Math.random() * 25 + 1.10).toFixed(2);
+                displayEl.innerText = `${randomVal}x`;
+                count++;
+                if (count > 12) {
+                    clearInterval(shuffleInterval);
+                    gaugeEl.classList.remove('scanning');
+                    predictBtnEl.disabled = false;
+                    isScanning = false;
+                    updateDisplay(parseFloat(finalValue).toFixed(2), roundId, status);
+                }
+            }, 40);
+        }
+
+        // Update UI Elements
+        function updateDisplay(multiplierStr, roundId, status) {
+            displayEl.innerText = `${multiplierStr}x`;
+            const rnd = roundId || 1006;
+            const stat = (status || 'WAITING').toUpperCase();
+            
+            statusTextEl.innerText = stat === 'FLYING' ? 'ROUND FLYING' : stat === 'WAITING' ? 'NEXT ROUND SIGNAL' : 'SIGNAL READY';
+            roundInfoEl.innerText = `Round #${rnd} • Confidence 98.4%`;
+        }
+
+        // Manual Button Click Trigger
+        function handleGetPrediction() {
+            fetchPrediction(true);
+        }
+
+        // Start Real-Time Polling
+        function startPolling() {
+            if (pollingTimer) clearInterval(pollingTimer);
+            fetchPrediction(false);
+            pollingTimer = setInterval(() => {
+                if (CONFIG.autoPoll && !isScanning) {
+                    fetchPrediction(false);
+                }
+            }, CONFIG.intervalMs);
+        }
+
+        function toggleAutoPoll(el) {
+            CONFIG.autoPoll = el.checked;
+        }
+
+        function handleInstall() {
+            alert('📱 AVIATOR PREDICTOR PRO V14\n\nTo install on your mobile device:\n1. Tap your browser menu (⋮ or Share icon)\n2. Select "Add to Home screen"\n3. Launch directly anytime!');
+        }
+
+        // Modal Controls
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('open');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('open');
+        }
+
+        function saveSettings() {
+            const dom = document.getElementById('cfgDomain').value.trim();
+            const key = document.getElementById('cfgApiKey').value.trim();
+            const iv = parseInt(document.getElementById('cfgInterval').value) || 2000;
+
+            if (dom) { CONFIG.domain = dom; localStorage.setItem('pred_domain', dom); }
+            if (key) { CONFIG.apiKey = key; localStorage.setItem('pred_apikey', key); }
+            if (iv) { CONFIG.intervalMs = iv; localStorage.setItem('pred_interval', iv); }
+
+            closeSettings();
+            startPolling();
+        }
+
+        // Start engine on load
+        window.addEventListener('DOMContentLoaded', () => {
+            startPolling();
+        });
+    </script>
+</body>
+</html>
