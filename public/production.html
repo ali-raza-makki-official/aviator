@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production API Integration & Health Portal - Aviator Engine</title>
+    <link rel="icon" type="image/png" href="/assets/ico/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        :root {
+            --bg-dark: #08090d;
+            --bg-card: #121420;
+            --bg-code: #06070a;
+            --accent-red: #e50539;
+            --accent-cyan: #00f0ff;
+            --accent-gold: #ffb800;
+            --accent-green: #00e676;
+            --text-main: #ffffff;
+            --text-sub: #9ea4b0;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 40px 5%; overflow-x: hidden; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo img { height: 30px; }
+        .badge-prod {
+            background: rgba(0, 230, 118, 0.15);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            color: var(--accent-green);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a { color: var(--text-sub); text-decoration: none; margin-left: 20px; font-weight: 500; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--text-main); }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-banner {
+            background: linear-gradient(145deg, #121420 0%, #0a0b12 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            margin-bottom: 35px;
+        }
+
+        .hero-banner h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-banner p {
+            color: var(--text-sub);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .status-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            font-weight: 700;
+            letter-spacing: 0.8px;
+        }
+
+        .status-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+        }
+
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            color: #d1d5db;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-top: 14px;
+        }
+
+        .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.15s ease;
+        }
+
+        .btn-launch:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo">
+            <img src="/aviator-logo.c6b742d995765be3.svg" alt="Aviator">
+            <span class="badge-prod">● PRODUCTION ACTIVE</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/game/aviator">Play Game</a>
+            <a href="/docs">API Docs</a>
+            <a href="/contact">Contact Sales</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="hero-banner">
+            <h1>Production API Health & Integration Status</h1>
+            <p>This portal verifies the production cluster readiness, WebSocket latency, authorized aggregator launch sessions, and target prediction endpoints.</p>
+            
+            <a href="/game/aviator?token=session_demo_prod" class="btn-launch">🎮 Launch Authorized Production Session</a>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">Engine Cluster Status</div>
+                <div class="status-value" style="color: var(--accent-green);">● ONLINE (100%)</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Live Active Round</div>
+                <div class="status-value" id="prod-round-id">#1075</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Round Status</div>
+                <div class="status-value" id="prod-status" style="color: var(--accent-gold);">WAITING</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Target Multiplier</div>
+                <div class="status-value" id="prod-target">--.--x</div>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 28px;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Authorized Aggregator Launch API</h3>
+            <p style="color: var(--text-sub); font-size: 0.9rem;">To launch players seamlessly without iframes, execute a GET request to obtain the session token and redirectUrl:</p>
+
+            <div class="code-block">curl -X GET "http://localhost:3000/api/v1/game/launch?userId=player_101&username=ProUser&phone=%2B923001234567&balance=5000&currency=PKR&region=PK&apiKey=AVIATOR_API_KEY_PREDICT_2026"</div>
+        </div>
+
+    </div>
+
+    <script>
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log('[Production Health] Connected to socket');
+        });
+
+        const handleState = (state) => {
+            const rId = state.roundId || (state.gameState && state.gameState.roundId) || 1001;
+            const st = state.status || (state.gameState && state.gameState.status) || 'WAITING';
+            const target = state.targetCrashMultiplier || (state.gameState && state.gameState.targetCrashMultiplier) || null;
+
+            document.getElementById('prod-round-id').textContent = '#' + rId;
+            document.getElementById('prod-status').textContent = st;
+            if (target) {
+                document.getElementById('prod-target').textContent = parseFloat(target).toFixed(2) + 'x';
+            }
+        };
+
+        socket.on('game_state', handleState);
+        socket.on('game-state', handleState);
+        socket.on('admin_stats_update', handleState);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1270 @@
+:root {
+  --headerHeight: 40px;
+  --resultHistoryHeight: 32px;
+  --betControlsHeightRow: 184px;
+  --betControlsHeightColumn: 292px;
+  --navigationSwitcherHeight: 32px;
+  --totalWinWidgetHeight: 68px;
+  --paddingSmall: 4px;
+  --paddingMedium: 8px;
+  --marginSmall: 4px;
+  --headerHeightDynamic: var(--headerHeight);
+  --betControlsHeight: var(--betControlsHeightColumn);
+  --stageBoardOffset: calc(var(--headerHeightDynamic) + var(--paddingSmall) + var(--resultHistoryHeight) + var(--marginSmall) + var(--paddingSmall) + var(--betControlsHeight) + var(--paddingSmall) + var(--paddingMedium) + var(--navigationSwitcherHeight) + var(--marginSmall) + var(--totalWinWidgetHeight) + var(--marginSmall));
+}
+
+*,
+*::before,
+*::after,
+html,
+body,
+div,
+section,
+app-root,
+.main-wrapper,
+.main-container,
+.game-container,
+.bets-widget-container,
+.data-list {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+div::-webkit-scrollbar,
+section::-webkit-scrollbar,
+app-root::-webkit-scrollbar,
+.main-wrapper::-webkit-scrollbar,
+.main-container::-webkit-scrollbar,
+.game-container::-webkit-scrollbar,
+.bets-widget-container::-webkit-scrollbar,
+.data-list::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+html, body {
+  width: 100% !important;
+  min-height: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: #000000 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+.main-wrapper {
+  width: 100% !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+}
+
+.main-container,
+.main-wrapper .main-container,
+.main-wrapper.hide-chat-bar .main-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  padding-top: 40px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: #0e0e0e !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. HEADER COMPONENT STYLES
+   -------------------------------------------------------------------------- */
+.main-header,
+app-header {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  background: #1b1c1d !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-sizing: border-box !important;
+  z-index: 1000 !important;
+}
+
+.header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  box-sizing: border-box !important;
+}
+
+.game-logo {
+  width: 96px !important;
+  min-width: 96px !important;
+  height: 28px !important;
+  background: url('/aviator-logo.c6b742d995765be3.svg') no-repeat left center / contain !important;
+  display: block !important;
+}
+
+.header-right .balance {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #28a745 !important;
+}
+
+.header-right .balance-currency {
+  color: #9ea4b0 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.user-info .avatar img,
+.dropdown-toggle .avatar img,
+app-settings-menu .avatar img {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+/* AVATARS & TOP PLAYER AVATARS SIZE LOCK */
+.avatars,
+app-top-player-avatars,
+app-top-player-avatars .avatars {
+  display: inline-flex !important;
+  align-items: center !important;
+  position: relative !important;
+  height: 24px !important;
+  max-height: 24px !important;
+}
+
+.avatars img,
+.avatars img.avatar,
+app-top-player-avatars img,
+app-top-player-avatars img.avatar,
+.total-win-container .avatars img,
+img.avatar,
+img[src*="avatars"] {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  display: inline-block !important;
+  border: 1px solid #14151b !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. GAME CONTAINER RESPONSIVE LAYOUT (DESKTOP FLEX ROW / MOBILE FLEX COLUMN)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1100px) {
+  .game-container,
+  .main-wrapper .main-container .game-container {
+    display: flex !important;
+    flex-direction: row !important;
+    height: calc(100vh - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    padding: 4px 6px !important;
+    gap: 6px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .bets-widget-container,
+  .main-wrapper .main-container .game-container .bets-widget-container {
+    order: 1 !important;
+    width: 360px !important;
+    min-width: 360px !important;
+    max-width: 360px !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #1b1c1d !important;
+    border-radius: 12px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @media (min-width: 1400px) {
+    .bets-widget-container,
+    .main-wrapper .main-container .game-container .bets-widget-container {
+      width: 380px !important;
+      min-width: 380px !important;
+      max-width: 380px !important;
+    }
+  }
+
+  .game-play,
+  app-game-play,
+  .main-wrapper .main-container .game-container .game-play {
+    order: 2 !important;
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 1099px) {
+  html, body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .main-wrapper,
+  .main-container {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .game-container,
+  .main-wrapper .main-container .game-container {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: calc(100vh - 40px) !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 4px !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+  }
+
+  .game-play,
+  app-game-play,
+  .main-wrapper .main-container .game-container .game-play {
+    order: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    flex: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .stage-board,
+  app-stage-board,
+  app-play-board,
+  .play-board-wrapper {
+    width: 100% !important;
+    height: clamp(340px, calc(100dvh - 380px), 460px) !important;
+    min-height: 330px !important;
+    max-height: 460px !important;
+    position: relative !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    background: rgb(14, 14, 14) !important;
+    color: rgb(33, 37, 41) !important;
+    box-sizing: border-box !important;
+  }
+
+  .bet-controls,
+  app-bet-controls {
+    width: 100% !important;
+    flex: none !important;
+    margin-top: 4px !important;
+  }
+
+  .bets-widget-container,
+  .main-wrapper .main-container .game-container .bets-widget-container {
+    order: 2 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 300px !important;
+    max-height: none !important;
+    margin-top: 4px !important;
+    background: #1b1c1d !important;
+    border-radius: 14px !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+.bets-block,
+app-bets-widget .bets-block,
+app-all-bets-tab,
+app-previous-bets-tab,
+app-top-bets-tab,
+.bets-block .data-list,
+.bets-block .d-flex,
+.bets-block app-total-win-widget,
+.bets-block app-navigation-switcher {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  background: #1b1c1d !important;
+}
+
+.bets-block {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 4px 8px 8px 8px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: #1b1c1d !important;
+}
+
+.bets-block div.navigation-switcher {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: #141516 !important;
+  border-radius: 64px !important;
+  border: 3.5px solid #141516 !important;
+  padding: 0 !important;
+  height: 32px !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 auto 4px auto !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.bets-block .navigation-switcher .tab {
+  flex: 1 1 0% !important;
+  width: 33.333% !important;
+  max-width: 33.333% !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  color: #a3a3a3 !important;
+  padding: 0 !important;
+  border-radius: 32px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.18px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  outline: none !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.bets-block .navigation-switcher .tab.active {
+  background: #2c2d30 !important;
+  color: #ebebeb !important;
+  border-radius: 32px !important;
+}
+
+.total-win-container {
+  background: rgb(20, 21, 22) !important;
+  border-radius: 14px !important;
+  padding: 8px !important;
+  margin: 0 0 4px 0 !important;
+  height: 68px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  color: rgb(33, 37, 41) !important;
+}
+
+.total-win-container .header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 20px !important;
+  margin-bottom: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.total-win-container .avatars img,
+.total-win-container app-top-player-avatars img {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  border: 1px solid rgb(40, 169, 10) !important;
+  border-radius: 50% !important;
+  margin-left: -8px !important;
+  object-fit: cover !important;
+}
+
+.total-win-container .avatars img:first-child,
+.total-win-container app-top-player-avatars img:first-child {
+  margin-left: 0 !important;
+}
+
+.total-win-container .stats {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 16px !important;
+  margin-bottom: 4px !important;
+  box-sizing: border-box !important;
+}
+
+.total-win-container .bets-count {
+  color: rgb(204, 204, 204) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  line-height: 100% !important;
+}
+
+.total-win-container .bets-label {
+  color: rgb(123, 123, 123) !important;
+  font-size: 12px !important;
+  padding-left: 4px !important;
+}
+
+.total-win-container .cashout-value {
+  color: rgb(204, 204, 204) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  line-height: 18px !important;
+}
+
+.total-win-container .total-win {
+  color: rgb(123, 123, 123) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 100% !important;
+}
+
+.total-win-container .progress {
+  width: 100% !important;
+  height: 8px !important;
+  background: rgb(20, 21, 22) !important;
+  padding: 2px !important;
+  border-radius: 32px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  line-height: 0 !important;
+  font-size: 0.75rem !important;
+  box-sizing: border-box !important;
+}
+
+.total-win-container .progress-bar {
+  height: 100% !important;
+  background: rgb(44, 180, 59) !important;
+  border-radius: 32px !important;
+  transition: width 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.bets-list-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 8px !important;
+  width: 100% !important;
+  margin: 0 0 4px 0 !important;
+  color: #7b7b7b !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.15px !important;
+  flex-shrink: 0 !important;
+  border: none !important;
+  box-sizing: border-box !important;
+}
+
+.bets-list-header-item.player { min-width: 92px !important; width: 100% !important; text-align: left !important; padding: 0 4px !important; }
+.bets-list-header-item.bet { min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; }
+.bets-list-header-item.x { min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; }
+.bets-list-header-item.win { min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; }
+
+/* INTERNAL SCROLLABLE BETS LIST */
+app-all-bets-tab,
+app-previous-bets-tab,
+app-top-bets-tab,
+.data-list,
+.bets-block .data-list,
+.bets-list {
+  flex: 1 1 0% !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+app-bets-list-item { display: block !important; width: 100% !important; }
+
+.bet-list-item {
+  display: flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  padding: 4px !important;
+  margin: 4px 0 0 0 !important;
+  width: 100% !important;
+  border-radius: 32px !important;
+  background: #0e0f10 !important;
+  font-size: 12px !important;
+  box-sizing: border-box !important;
+}
+
+.bet-list-item.cashout {
+  background: linear-gradient(0deg, rgba(66, 127, 0, 0.3) 0%, rgba(66, 127, 0, 0.3) 100%), #0e0f10 !important;
+  border: 1px solid rgba(40, 169, 9, 0.3) !important;
+}
+
+.bet-list-item-column { font-size: 12px !important; color: #bbbfc5 !important; font-weight: 500 !important; }
+.bet-list-item-column.player { display: flex !important; align-items: center !important; min-width: 92px !important; width: 100% !important; text-align: left !important; }
+.bet-list-item-column.player img.avatar { width: 24px !important; height: 24px !important; min-width: 24px !important; min-height: 24px !important; border-radius: 50% !important; object-fit: cover !important; margin-right: 4px !important; }
+.bet-list-item-column.player .username { color: #bbbfc5 !important; font-weight: 500 !important; letter-spacing: -0.18px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; padding: 0 4px !important; }
+.bet-list-item-column.bet { display: flex !important; align-items: center !important; justify-content: flex-end !important; min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; }
+.bet-list-item-column.x { min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; font-weight: 700 !important; }
+.bet-list-item-column.win { min-width: 72px !important; width: 100% !important; text-align: right !important; margin-left: 4px !important; padding: 0 4px !important; font-weight: 600 !important; color: #28a745 !important; }
+
+/* LOCKED STICKY SIDEBAR FOOTER */
+app-bets-widget-footer,
+.bets-footer,
+.bets-widget-footer {
+  width: 100% !important;
+  margin-top: auto !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  padding: 0 12px !important;
+  background: #1b1c1d !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  font-size: 11px !important;
+  color: #9ea4b0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 100 !important;
+  box-sizing: border-box !important;
+}
+
+.bets-widget-footer button,
+.bets-widget-footer .provably-fair-block {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #9ea4b0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.bets-widget-footer .i-fair::before {
+  content: "🛡️" !important;
+  font-size: 11px !important;
+  margin-right: 2px !important;
+}
+
+.bets-widget-footer .logo-block,
+.bets-widget-footer .logo-btn {
+  color: #9ea4b0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+}
+
+.bets-widget-footer .i-logo::before {
+  content: "SPRIBE" !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. STAGE BOARD & CANVAS COMPONENT STYLES
+   -------------------------------------------------------------------------- */
+.game-play,
+app-game-play {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.result-history,
+app-stats-widget {
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  margin-bottom: 4px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+app-stats-dropdown,
+.dropdown-menu.stats-dropdown {
+  box-shadow: 0px 0px 4px rgba(20, 20, 20, 0.88), 0px 0px 0px 2px rgba(44, 45, 48, 0.4) !important;
+  background: #1b1c1d !important;
+  border-radius: 16px !important;
+  padding: 4px !important;
+  margin: 0 4px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+app-stats-dropdown .header,
+.dropdown-menu .header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  color: #9ea4b0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.18px !important;
+}
+
+app-stats-dropdown .payouts-block,
+.dropdown-menu .payouts-block {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  padding: 2px 4px !important;
+  box-sizing: border-box !important;
+}
+
+app-stats-dropdown .payout,
+.dropdown-menu .payout {
+  display: inline-block !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 2px 6px !important;
+  margin: 4px 4px 0 0 !important;
+  border-radius: 32px !important;
+  cursor: pointer !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.stage-board,
+app-stage-board,
+app-play-board,
+.play-board-wrapper {
+  flex: 1 1 0% !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  position: relative !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgb(14, 14, 14) !important;
+  color: rgb(33, 37, 41) !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.stage-board app-top-player-avatars,
+.play-board-wrapper app-top-player-avatars {
+  display: none !important;
+}
+
+.stage-canvas {
+  position: absolute !important;
+  top: 0px !important;
+  left: 0px !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.stage-board canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. BET CONTROLS COMPONENT STYLES
+   -------------------------------------------------------------------------- */
+.bet-controls,
+div.bet-controls {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+app-bet-controls > div.controls,
+app-bet-controls > div.controls-wrap,
+.bet-controls div.controls {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  gap: 4px !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  box-sizing: border-box !important;
+}
+
+app-bet-control.bet-control,
+app-bet-control {
+  flex: 1 1 0% !important;
+  width: calc(50% - 2px) !important;
+  background: #1b1c1d !important;
+  border-radius: 14px !important;
+  padding: 8px 16px 10px 16px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  position: relative !important;
+}
+
+@media (max-width: 680px) {
+  app-bet-controls > div.controls,
+  app-bet-controls > div.controls-wrap,
+  .bet-controls div.controls {
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  app-bet-control.bet-control,
+  app-bet-control {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+app-bet-control > div.controls,
+app-bet-control .controls,
+app-bet-control .controls-content-top,
+.controls-content-top {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  box-sizing: border-box !important;
+}
+
+.navigation-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 0 0 6px 0 !important;
+  padding: 0 !important;
+}
+
+app-navigation-switcher,
+app-navigation-switcher.navigation-switcher,
+app-bet-control app-navigation-switcher {
+  display: block !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+  max-width: none !important;
+}
+
+.bets-block div.navigation-switcher {
+  display: flex !important;
+  background: #141516 !important;
+  border-radius: 64px !important;
+  border: 4px solid #141516 !important;
+  padding: 0 !important;
+  height: 32px !important;
+  width: calc(100% - 16px) !important;
+  max-width: 400px !important;
+  margin: 6px 8px 4px 8px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+app-bet-control div.navigation-switcher {
+  display: flex !important;
+  background: #141516 !important;
+  border-radius: 64px !important;
+  border: 3.5px solid #141516 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 208px !important;
+  height: 30px !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+}
+
+app-bet-control .navigation-switcher button.tab {
+  flex: 1 !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  color: #a3a3a3 !important;
+  padding: 0 !important;
+  border-radius: 32px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.18px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.25s ease-in, color 0.25s ease-in !important;
+}
+
+app-bet-control .navigation-switcher button.tab.active {
+  background: #2c2d30 !important;
+  color: #ebebeb !important;
+  border-radius: 32px !important;
+}
+
+.first-row.bet-game {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin: 6px 0 0 0 !important;
+  gap: 10px !important;
+}
+
+.first-row .bet-block,
+.left-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 0 0 140px !important;
+  width: 140px !important;
+  max-width: 140px !important;
+  min-width: 140px !important;
+  margin: 0 !important;
+  gap: 6px !important;
+}
+
+app-spinner .spinner.big,
+.spinner.big,
+.amount-stepper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background-color: #141516 !important;
+  border-radius: 32px !important;
+  padding: 3.5px !important;
+  height: 32px !important;
+  width: 140px !important;
+  border: none !important;
+}
+
+.spinner.big .buttons button,
+app-spinner button.minus,
+app-spinner button.plus,
+.spinner button.minus,
+.spinner button.plus,
+.amount-stepper button {
+  background-color: #2b2c30 !important;
+  border: none !important;
+  color: #d1d1d1 !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  border-radius: 50% !important;
+  font-size: 15px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  outline: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  line-height: 1 !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.spinner.big .buttons button:active,
+app-spinner button.minus:active,
+app-spinner button.plus:active,
+.amount-stepper button:active {
+  background-color: #3e3f44 !important;
+  transform: translateY(1px) !important;
+}
+
+.spinner.big .buttons button.minus::before,
+.spinner.big .buttons button.plus::before {
+  content: "" !important;
+  display: none !important;
+}
+
+.spinner.big .input {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 1 0% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.spinner.big .input input,
+.amount-stepper input {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 14.5px !important;
+  text-align: center !important;
+  outline: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+.spinner.big .input input::placeholder,
+.amount-stepper input::placeholder {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  text-align: center !important;
+}
+
+.bets-opt-list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  width: 140px !important;
+  margin-top: 4px !important;
+  justify-content: center !important;
+}
+
+.bets-opt-list button.bet-opt,
+.bets-opt-list .bet-opt,
+.preset-grid button {
+  width: 68px !important;
+  height: 24px !important;
+  background-color: #252528 !important;
+  border: 1px solid #36363c !important;
+  border-radius: 64px !important;
+  color: #83878e !important;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.bets-opt-list button.bet-opt span { color: #9a9a9a !important; font-size: 12.5px !important; font-weight: 600 !important; }
+.bets-opt-list button.bet-opt:active,
+.bets-opt-list .bet-opt:active,
+.preset-grid button:active { background-color: #2b2c30 !important; color: #ffffff !important; }
+.bets-opt-list button.bet-opt:active span { color: #ffffff !important; }
+
+.first-row .buttons-block,
+.right-controls {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  display: flex !important;
+  align-items: stretch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.first-row .buttons-block button.btn-success,
+.first-row .buttons-block button.bet,
+button.btn-success.bet,
+.bet-button {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  background-color: #28a745 !important;
+  background: linear-gradient(180deg, #32c855 0%, #229339 100%) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 4px 6px !important;
+  box-shadow: 0 3px 0 #1b732d !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+  outline: none !important;
+  margin: 0 !important;
+}
+
+.first-row .buttons-block button.btn-success:active,
+.first-row .buttons-block button.bet:active,
+button.btn-success.bet:active,
+.bet-button:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 0 0 #1b732d !important;
+}
+
+.first-row .buttons-block button.btn-success label,
+button.btn-success.bet label,
+.bet-button .title,
+.bet-button .amount {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.1 !important;
+  cursor: pointer !important;
+  display: block !important;
+}
+
+.first-row .buttons-block button.btn-success label.label,
+button.btn-success.bet label.label,
+button.btn-success.bet label:first-child,
+.bet-button .title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+.first-row .buttons-block button.btn-success label.amount,
+button.btn-success.bet label.amount,
+button.btn-success.bet label:last-child,
+.bet-button .amount {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  opacity: 0.95 !important;
+  margin-top: 1px !important;
+}
+
+.sec-hand-btn.remove {
+  position: absolute !important;
+  top: 4px !important;
+  right: 6px !important;
+  width: 18px !important;
+  height: 18px !important;
+  background: #2c2d30 !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}
+
+.sec-hand-btn.remove::before {
+  content: "×" !important;
+  color: #9ea4b0 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. CHAT & SCROLLBAR UTILITIES
+   -------------------------------------------------------------------------- */
+.chat-bar,
+app-chat {
+  display: none !important;
+}
+
+.data-list::-webkit-scrollbar,
+.bets-list::-webkit-scrollbar,
+cdk-virtual-scroll-viewport::-webkit-scrollbar,
+.cdk-virtual-scroll-viewport::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. SIDEBAR BETS LIST FLEX & VISIBILITY FIX
+   -------------------------------------------------------------------------- */
+app-bets-widget,
+app-bets-widget .bets-block,
+app-all-bets-tab,
+app-previous-bets-tab,
+app-top-bets-tab,
+.bets-widget-container,
+.bets-block {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+app-bets-list,
+.bets-block .data-list,
+app-all-bets-tab .d-flex {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0% !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+app-bets-list > .bets-list,
+app-bets-list .scroll-hide,
+.bets-list-viewport,
+cdk-virtual-scroll-viewport,
+.cdk-virtual-scroll-viewport {
+  display: block !important;
+  flex: 1 1 0% !important;
+  height: 100% !important;
+  min-height: 200px !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.cdk-virtual-scroll-content-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-height: 100% !important;
+  position: relative !important;
+  transform: none !important;
+}
+
+app-bets-list-item {
+  display: block !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+}
+
+.bet-list-item {
+  display: flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  padding: 4px 8px !important;
+  margin: 2px 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border-radius: 4px !important;
+}
+
+.bet-list-item-column.player {
+  flex: 1.2 1 0% !important;
+  width: auto !important;
+  min-width: 80px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.bet-list-item-column.bet {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+.bet-list-item-column.x {
+  flex: 0.8 1 0% !important;
+  width: auto !important;
+  min-width: 50px !important;
+  text-align: right !important;
+}
+
+.bet-list-item-column.win {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 60px !important;
+  text-align: right !important;
+}
+

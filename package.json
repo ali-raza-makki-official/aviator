@@ -1,0 +1,24 @@
+{
+  "name": "aviator-crash-game-backend",
+  "version": "1.0.0",
+  "description": "Aviator Crash Game Full-Stack Node.js Engine with Admin Control Panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "aviator",
+    "crash-game",
+    "socket.io",
+    "express",
+    "casino-game"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
