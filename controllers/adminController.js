@@ -57,26 +57,36 @@ class AdminController {
     });
   }
 
-  // Update User Balance (Deposit / Withdraw / Admin Adjustment)
-  updateUserBalance(req, res) {
-    const { userId, balance, newBalance, adjustmentAmount } = req.body;
-    const user = store.getUser(userId || 'user_demo');
+  // Update User Balance (Deposit / Withdraw / Admin Adjustment with Immutable Audit Record)
+  async updateUserBalance(req, res) {
+    try {
+      const { userId, balance, newBalance, adjustmentAmount, reason } = req.body;
+      const targetUserId = userId || 'user_demo';
+      const user = store.getUser(targetUserId);
 
-    const targetBalance = newBalance !== undefined ? newBalance : balance;
+      if (!user) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+      }
 
-    if (targetBalance !== undefined) {
-      store.setUserBalance(user.id, parseFloat(targetBalance));
-    } else if (adjustmentAmount !== undefined) {
-      store.updateUserBalance(user.id, parseFloat(adjustmentAmount));
+      const targetBalance = newBalance !== undefined ? newBalance : balance;
+      const result = await store.walletLedger.adminAdjustBalance(targetUserId, {
+        newBalance: targetBalance,
+        adjustmentAmount,
+        adminId: 'admin_portal',
+        reason: reason || 'Manual Admin Balance Adjustment'
+      });
+
+      console.log(`[ADMIN AUDIT] Balance adjusted for ${user.username}: ${result.balance} ${user.currency} (Tx: ${result.tx.txId})`);
+
+      res.json({
+        success: true,
+        message: `Balance updated for ${user.username}`,
+        user: result.user,
+        transaction: result.tx
+      });
+    } catch (err) {
+      res.status(400).json({ success: false, error: err.message });
     }
-
-    console.log(`[ADMIN ACTION] Updated balance for ${user.username}: ${user.balance} ${user.currency}`);
-
-    res.json({
-      success: true,
-      message: `Balance updated for ${user.username}`,
-      user
-    });
   }
 
   // Update RTP & Multiplier Range Control Settings

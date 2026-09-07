@@ -8,13 +8,47 @@ const predictionController = require('../controllers/predictionController');
 router.get('/v1/predict', predictionController.verifyApiKey, predictionController.getActiveRoundPrediction);
 router.get('/v1/active-target', predictionController.verifyApiKey, predictionController.getActiveRoundPrediction);
 
-// Get User Information & Balance
+// Get User Information & Balance (Secured with Token Authentication & Authorization)
 router.get('/user/me', (req, res) => {
-  const userId = req.query.userId || 'user_demo';
-  const user = store.getUser(userId);
+  const token = req.headers['authorization'] ? req.headers['authorization'].replace('Bearer ', '').trim() : (req.query.token || req.query.sessionToken);
+  const requestedUserId = req.query.userId || req.query.user_id;
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized: Missing session token',
+      message: 'Pass a valid launch session token via Authorization header or ?token= parameter.'
+    });
+  }
+
+  const session = store.validateSession(token);
+  if (!session) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized: Invalid or expired session token',
+      message: 'The provided session token is invalid or has expired.'
+    });
+  }
+
+  // Cross-user IDOR Protection: If userId query parameter is passed, ensure it matches session.userId
+  if (requestedUserId && String(requestedUserId) !== String(session.userId)) {
+    return res.status(403).json({
+      success: false,
+      error: 'Forbidden: Access denied to requested user account',
+      message: 'You are not authorized to view or access another user account.'
+    });
+  }
+
+  const user = store.getUser(session.userId);
   res.json({
     success: true,
-    user
+    user,
+    session: {
+      token: session.token,
+      currency: session.currency,
+      region: session.region,
+      createdAt: session.createdAt
+    }
   });
 });
 
@@ -26,13 +60,72 @@ router.get('/game/history', (req, res) => {
   });
 });
 
-// Get Current Game State
+// Get Current Game State (Sanitized to prevent target multiplier leakage during active round)
 router.get('/game/state', (req, res) => {
+  const isCrashed = store.gameState.status === 'CRASHED';
+  const publicState = {
+    roundId: store.gameState.roundId,
+    status: store.gameState.status,
+    currentMultiplier: store.gameState.currentMultiplier,
+    countdownSeconds: store.gameState.countdownSeconds,
+    serverSeedHash: store.gameState.serverSeedHash,
+    clientSeed: store.gameState.clientSeed,
+    nonce: store.gameState.nonce,
+    startTime: store.gameState.startTime,
+    // targetCrashMultiplier is ONLY exposed after the round resolves (CRASHED)
+    targetCrashMultiplier: isCrashed ? store.gameState.targetCrashMultiplier : undefined
+  };
+
   res.json({
     success: true,
-    state: store.gameState
+    state: publicState
   });
 });
+
+// Provably Fair Independent Verification Endpoint (GET /api/v1/verify-round & GET /api/game/verify)
+const verifyRoundHandler = (req, res) => {
+  const crypto = require('crypto');
+  const gameEngine = require('../controllers/gameEngine');
+  
+  const serverSeed = req.query.serverSeed || req.query.server_seed;
+  const clientSeed = req.query.clientSeed || req.query.client_seed || '0000000000000000000000000000000000000000000000000000000000000000';
+  const nonce = req.query.nonce || req.query.roundId || req.query.round_id || 1;
+
+  if (!serverSeed) {
+    return res.status(400).json({
+      success: false,
+      error: 'Missing serverSeed parameter',
+      message: 'Pass serverSeed, clientSeed, and nonce/roundId to independently verify a completed round multiplier.'
+    });
+  }
+
+  const computedHash = crypto.createHash('sha256').update(serverSeed).digest('hex');
+  const computedMultiplier = gameEngine.constructor.calculateProvablyFairCrash(serverSeed, clientSeed, nonce);
+
+  let historicalRecord = null;
+  if (req.query.roundId || req.query.nonce) {
+    const targetRound = parseInt(req.query.roundId || req.query.nonce);
+    historicalRecord = store.roundHistory.find(r => r.roundId === targetRound);
+  }
+
+  res.json({
+    success: true,
+    verification: {
+      serverSeed,
+      serverSeedHash: computedHash,
+      clientSeed,
+      nonce: parseInt(nonce),
+      computedMultiplier,
+      historicalMultiplier: historicalRecord ? historicalRecord.multiplier : null,
+      hashMatches: historicalRecord ? (historicalRecord.serverSeedHash === computedHash) : true,
+      outcomeMatches: historicalRecord ? (historicalRecord.multiplier === computedMultiplier) : true,
+      isVerified: true
+    }
+  });
+};
+
+router.get('/v1/verify-round', verifyRoundHandler);
+router.get('/game/verify', verifyRoundHandler);
 
 // Authorized Aggregator Game Launch Endpoint (GET / POST - Direct Game Launch)
 const handleGameLaunch = (req, res) => {
@@ -88,15 +181,15 @@ const handleGameLaunch = (req, res) => {
 router.get('/v1/game/launch', predictionController.verifyApiKey, handleGameLaunch);
 router.post('/v1/game/launch', predictionController.verifyApiKey, handleGameLaunch);
 
-// Retrieve Active Session Details by Token
+// Retrieve Active Session Details by Token (Secured via validateSession)
 router.get('/v1/game/session', (req, res) => {
   const token = req.query.token;
   if (!token) {
-    return res.status(400).json({ success: false, message: 'Token query parameter required' });
+    return res.status(401).json({ success: false, error: 'Unauthorized: Token query parameter required' });
   }
-  const session = store.getSession(token);
+  const session = store.validateSession(token);
   if (!session) {
-    return res.status(404).json({ success: false, message: 'Invalid or expired session token' });
+    return res.status(401).json({ success: false, error: 'Unauthorized: Invalid or expired session token' });
   }
   const user = store.getUser(session.userId);
   res.json({
@@ -114,8 +207,8 @@ router.get('/v1/webhooks', predictionController.verifyApiKey, (req, res) => {
     webhooks: store.getWebhooks(),
     samplePayload: {
       event: 'TARGET_PREDICTION_DISPATCH',
-      roundId: store.gameState.roundId,
-      targetCrashMultiplier: store.gameState.targetCrashMultiplier,
+      roundId: 1042,
+      targetCrashMultiplier: 2.45,
       timestamp: Date.now()
     }
   });

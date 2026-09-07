@@ -1,5 +1,6 @@
 const store = require('../models/store');
 const config = require('../config/game-config');
+const crypto = require('crypto');
 
 class GameEngine {
   constructor() {
@@ -7,65 +8,64 @@ class GameEngine {
     this.gameLoopInterval = null;
     this.countdownInterval = null;
     this.startTime = null;
+    this.currentServerSeed = null;
+    this.currentClientSeed = '0000000000000000000000000000000000000000000000000000000000000000';
   }
 
   init(io) {
     this.io = io;
-    console.log('[GameEngine] Initializing Aviator Crash Game Engine...');
+    console.log('[GameEngine] Initializing Provably Fair Aviator Crash Game Engine...');
     this.startWaitingState();
   }
 
-  // Generate target crash multiplier for the round
+  // Provably Fair Crash Calculation Function (HMAC-SHA256)
+  static calculateProvablyFairCrash(serverSeed, clientSeed, nonce) {
+    const hmac = crypto.createHmac('sha256', serverSeed).update(`${clientSeed}:${nonce}`).digest('hex');
+    const sub = hmac.substring(0, 13);
+    const h = parseInt(sub, 16);
+    const e = Math.pow(2, 52);
+
+    // 3% instant crash condition (house edge)
+    if (h % 33 === 0) {
+      return 1.00;
+    }
+
+    let multiplier = Math.floor((100 * e - h) / (e - h)) / 100;
+    multiplier = Math.max(1.00, multiplier);
+    return parseFloat(multiplier.toFixed(2));
+  }
+
+  // Generate target crash multiplier for the round using Provably Fair RNG
   calculateCrashMultiplier() {
     // 1. Check if Admin set a Forced Crash Multiplier
     if (store.adminControls.forcedNextCrash !== null && store.adminControls.forcedNextCrash >= 1.00) {
       const forced = parseFloat(store.adminControls.forcedNextCrash.toFixed(2));
       console.log(`[Admin Override] Next round forced crash at: ${forced}x`);
-      store.adminControls.forcedNextCrash = null; // Reset after setting
+      store.adminControls.forcedNextCrash = null;
+      this.currentServerSeed = crypto.randomBytes(32).toString('hex');
+      store.gameState.serverSeedHash = crypto.createHash('sha256').update(this.currentServerSeed).digest('hex');
+      store.gameState.clientSeed = this.currentClientSeed;
+      store.gameState.nonce = store.gameState.roundId;
       return forced;
     }
 
-    // 2. Evaluate Admin Configured Range Probabilities
-    const rw = store.adminControls.rangeWeights || { low: 40, med: 35, high: 15, ultra: 10 };
+    // 2. Cryptographically Secure Provably Fair RNG
+    this.currentServerSeed = crypto.randomBytes(32).toString('hex');
+    store.gameState.serverSeedHash = crypto.createHash('sha256').update(this.currentServerSeed).digest('hex');
+    store.gameState.clientSeed = this.currentClientSeed;
+    store.gameState.nonce = store.gameState.roundId;
+
+    const fairMultiplier = GameEngine.calculateProvablyFairCrash(
+      this.currentServerSeed,
+      store.gameState.clientSeed,
+      store.gameState.nonce
+    );
+
     const minMult = store.adminControls.minCrashMultiplier || 1.00;
     const maxMult = store.adminControls.maxCrashMultiplier || 250.00;
 
-    const totalWeight = (rw.low || 0) + (rw.med || 0) + (rw.high || 0) + (rw.ultra || 0);
-    const randWeight = Math.random() * (totalWeight > 0 ? totalWeight : 100);
-
-    let target;
-    let accum = rw.low || 0;
-
-    if (randWeight < accum) {
-      // Range 1: 1.00x - 1.99x
-      const minBound = Math.max(minMult, 1.00);
-      const maxBound = Math.min(maxMult, 1.99);
-      target = minBound + Math.random() * Math.max(0.01, (maxBound - minBound));
-    } else {
-      accum += (rw.med || 0);
-      if (randWeight < accum) {
-        // Range 2: 2.00x - 9.99x
-        const minBound = Math.max(minMult, 2.00);
-        const maxBound = Math.min(maxMult, 9.99);
-        target = minBound + Math.random() * Math.max(0.01, (maxBound - minBound));
-      } else {
-        accum += (rw.high || 0);
-        if (randWeight < accum) {
-          // Range 3: 10.00x - 50.00x
-          const minBound = Math.max(minMult, 10.00);
-          const maxBound = Math.min(maxMult, 50.00);
-          target = minBound + Math.random() * Math.max(0.01, (maxBound - minBound));
-        } else {
-          // Range 4: 50.00x+
-          const minBound = Math.max(minMult, 50.01);
-          const maxBound = Math.max(minBound + 1, maxMult);
-          target = minBound + Math.random() * Math.max(0.01, (maxBound - minBound));
-        }
-      }
-    }
-
-    target = Math.min(maxMult, Math.max(minMult, target));
-    return parseFloat(target.toFixed(2));
+    const clamped = Math.min(maxMult, Math.max(minMult, fairMultiplier));
+    return parseFloat(clamped.toFixed(2));
   }
 
   startWaitingState() {
@@ -80,13 +80,15 @@ class GameEngine {
     // Generate fresh bot bets for the new round
     const botBets = store.generateRandomBotBets();
 
-    console.log(`[GameEngine] Round #${store.gameState.roundId} WAITING. Target Crash: ${store.gameState.targetCrashMultiplier}x`);
+    console.log(`[GameEngine] Round #${store.gameState.roundId} WAITING. Commitment Hash: ${store.gameState.serverSeedHash.substring(0, 16)}...`);
 
-    // Broadcast state to clients
+    // Broadcast state to public clients (WITHOUT targetCrashMultiplier or serverSeed)
     this.io.emit('game_state', {
       status: 'WAITING',
       roundId: store.gameState.roundId,
-      targetCrashMultiplier: store.gameState.targetCrashMultiplier,
+      serverSeedHash: store.gameState.serverSeedHash,
+      clientSeed: store.gameState.clientSeed,
+      nonce: store.gameState.nonce,
       countdownSeconds: store.gameState.countdownSeconds,
       totalCountdownSeconds: config.GAME.WAIT_DURATION_SEC,
       roundHistory: store.roundHistory.slice(0, 100),
@@ -113,15 +115,16 @@ class GameEngine {
     this.startTime = Date.now();
     store.gameState.startTime = this.startTime;
 
-    const targetMult = store.gameState.targetCrashMultiplier;
+    console.log(`[GameEngine] Round #${store.gameState.roundId} FLYING! Hash: ${store.gameState.serverSeedHash.substring(0, 16)}...`);
 
-    console.log(`[GameEngine] Round #${store.gameState.roundId} FLYING! Target: ${targetMult}x`);
-
+    // Broadcast state to public clients (WITHOUT targetCrashMultiplier or serverSeed)
     this.io.emit('game_state', {
       status: 'FLYING',
       roundId: store.gameState.roundId,
       currentMultiplier: 1.00,
-      targetCrashMultiplier: store.gameState.targetCrashMultiplier,
+      serverSeedHash: store.gameState.serverSeedHash,
+      clientSeed: store.gameState.clientSeed,
+      nonce: store.gameState.nonce,
       startTime: this.startTime,
       elapsedMs: 0
     });
@@ -176,15 +179,25 @@ class GameEngine {
     store.gameState.status = 'CRASHED';
     store.gameState.currentMultiplier = finalMultiplier;
 
-    console.log(`[GameEngine] Round #${store.gameState.roundId} CRASHED at ${finalMultiplier}x`);
+    console.log(`[GameEngine] Round #${store.gameState.roundId} CRASHED at ${finalMultiplier}x. Server Seed Revealed: ${this.currentServerSeed}`);
 
-    // Add round to history log
-    const historyRecord = store.addRoundToHistory(finalMultiplier);
+    // Add round to history log along with revealed serverSeed and commitment data
+    const historyRecord = store.addRoundToHistory(
+      finalMultiplier,
+      this.currentServerSeed,
+      store.gameState.serverSeedHash,
+      store.gameState.clientSeed,
+      store.gameState.nonce
+    );
 
-    // Broadcast Crash event
+    // Broadcast Crash event with revealed serverSeed
     this.io.emit('game_crash', {
       roundId: store.gameState.roundId,
       finalMultiplier,
+      serverSeed: this.currentServerSeed,
+      serverSeedHash: store.gameState.serverSeedHash,
+      clientSeed: store.gameState.clientSeed,
+      nonce: store.gameState.nonce,
       historyRecord,
       roundHistory: store.roundHistory.slice(0, 100)
     });

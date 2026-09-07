@@ -1,14 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config/game-config');
+const walletLedger = require('./walletLedger');
 
 class Store {
   constructor() {
+    this.walletLedger = walletLedger;
     // History JSON File Path
     this.historyFilePath = path.join(__dirname, '../data/history.json');
     
-    // In-memory Users Store
-    this.users = new Map();
+    // Backwards-compatible Users Map referencing walletLedger
+    this.users = walletLedger.users;
     
     // Default Demo / Admin User
     this.createUser('user_demo', 'Player', config.GAME.DEFAULT_USER_BALANCE, true);
@@ -55,6 +57,14 @@ class Store {
     // Aggregator Platform Launch Sessions Map (token -> session)
     this.sessions = new Map();
 
+    // Pre-seed test session for integration testing
+    this.createSession('session_test_999', {
+      userId: 'test_user_777',
+      username: 'TestIntegrator',
+      balance: 2500,
+      currency: 'USD'
+    });
+
     // Registered Partner Webhooks
     this.webhooks = [
       {
@@ -81,108 +91,61 @@ class Store {
   }
 
   createUser(id, username, initialBalance = config.GAME.DEFAULT_USER_BALANCE, isDemo = false, extraData = {}) {
-    const user = {
-      id,
-      username: username || `Player_${id.substring(0, 5)}`,
-      phone: extraData.phone || extraData.phoneNumber || '+923000000000',
-      balance: parseFloat(initialBalance),
-      currency: extraData.currency || config.GAME.CURRENCY || 'PKR',
-      region: extraData.region || extraData.country || 'PK',
-      isDemo,
-      totalBet: 0,
-      totalWon: 0,
-      createdAt: new Date()
-    };
-    this.users.set(id, user);
-    return user;
+    return this.walletLedger.createUser(id, username, initialBalance, isDemo, extraData);
   }
 
-  getUser(id) {
-    if (!this.users.has(id)) {
-      return this.createUser(id, `Player_${id.substring(0, 5)}`);
-    }
-    return this.users.get(id);
+  getUser(id, autoCreate = false) {
+    return this.walletLedger.getUser(id, autoCreate);
   }
 
   updateUserBalance(id, amountChange) {
-    const user = this.getUser(id);
+    const user = this.walletLedger.getUser(id);
+    if (!user) return 0;
     user.balance = Math.max(0, parseFloat((user.balance + amountChange).toFixed(2)));
+    this.walletLedger.saveUsers();
     return user.balance;
   }
 
   setUserBalance(id, newBalance) {
-    const user = this.getUser(id);
+    const user = this.walletLedger.getUser(id);
+    if (!user) return 0;
     user.balance = Math.max(0, parseFloat(parseFloat(newBalance).toFixed(2)));
+    this.walletLedger.saveUsers();
     return user.balance;
   }
 
-  placeBet(userId, betSlot, amount) {
-    const user = this.getUser(userId);
-    amount = parseFloat(amount);
-
-    if (isNaN(amount) || amount <= 0) {
-      throw new Error("Invalid bet amount");
-    }
-
-    if (user.balance < amount) {
-      throw new Error("Insufficient balance");
-    }
-
-    // Deduct Balance
-    this.updateUserBalance(userId, -amount);
-    user.totalBet += amount;
-    this.adminControls.totalHouseBetsAmount += amount;
-
+  async placeBet(userId, betSlot, amount, idempotencyKey = null) {
+    const roundId = this.gameState.roundId;
+    const result = await this.walletLedger.placeBet(userId, betSlot, amount, roundId, idempotencyKey);
+    
+    // Also track in activeBets in-memory map for round management
     if (!this.activeBets.has(userId)) {
       this.activeBets.set(userId, {});
     }
-
     const userBets = this.activeBets.get(userId);
-    userBets[betSlot] = {
-      amount,
-      cashedOut: false,
-      multiplier: 0,
-      winAmount: 0,
-      timestamp: Date.now()
-    };
+    userBets[betSlot] = result.bet;
+    this.adminControls.totalHouseBetsAmount += parseFloat(amount);
 
-    return {
-      balance: user.balance,
-      bet: userBets[betSlot]
-    };
+    return result;
   }
 
-  cashoutBet(userId, betSlot, currentMultiplier) {
-    const userBets = this.activeBets.get(userId);
-    if (!userBets || !userBets[betSlot]) {
-      throw new Error("No active bet found for this slot");
-    }
-
-    const bet = userBets[betSlot];
-    if (bet.cashedOut) {
-      throw new Error("Bet already cashed out");
-    }
-
+  async cashoutBet(userId, betSlot, currentMultiplier, idempotencyKey = null) {
+    const roundId = this.gameState.roundId;
     if (this.gameState.status !== 'FLYING') {
       throw new Error("Game is not flying");
     }
 
-    bet.cashedOut = true;
-    bet.multiplier = currentMultiplier;
-    bet.winAmount = parseFloat((bet.amount * currentMultiplier).toFixed(2));
+    const result = await this.walletLedger.cashoutBet(userId, betSlot, roundId, currentMultiplier, idempotencyKey);
+    
+    if (this.activeBets.has(userId)) {
+      const userBets = this.activeBets.get(userId);
+      if (userBets && userBets[betSlot]) {
+        userBets[betSlot] = result.bet;
+      }
+    }
+    this.adminControls.totalHousePayoutAmount += result.winAmount;
 
-    // Credit Winnings
-    const user = this.getUser(userId);
-    this.updateUserBalance(userId, bet.winAmount);
-    user.totalWon += bet.winAmount;
-    this.adminControls.totalHousePayoutAmount += bet.winAmount;
-
-    return {
-      balance: user.balance,
-      winAmount: bet.winAmount,
-      multiplier: bet.multiplier,
-      betSlot
-    };
+    return result;
   }
 
   loadHistoryFromJSON() {
@@ -249,11 +212,15 @@ class Store {
     }
   }
 
-  addRoundToHistory(multiplier) {
+  addRoundToHistory(multiplier, serverSeed = null, serverSeedHash = null, clientSeed = null, nonce = null) {
     const record = {
       roundId: this.gameState.roundId,
       multiplier: parseFloat(multiplier.toFixed(2)),
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      serverSeed: serverSeed || null,
+      serverSeedHash: serverSeedHash || null,
+      clientSeed: clientSeed || '0000000000000000000000000000000000000000000000000000000000000000',
+      nonce: nonce !== null && nonce !== undefined ? nonce : this.gameState.roundId
     };
     this.roundHistory.unshift(record);
     this.roundHistory.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -330,6 +297,18 @@ class Store {
 
   getSession(token) {
     return this.sessions.get(token);
+  }
+
+  validateSession(token) {
+    if (!token) return null;
+    const session = this.sessions.get(token);
+    if (!session) return null;
+    const SESSION_TTL_MS = 86400000; // 24 Hours TTL
+    if (Date.now() - session.createdAt > SESSION_TTL_MS) {
+      this.sessions.delete(token);
+      return null;
+    }
+    return session;
   }
 
   // Contact Form Inquiry Methods

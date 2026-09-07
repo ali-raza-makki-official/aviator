@@ -109,6 +109,7 @@ app.all('*/api/10/envelope*', (req, res) => res.status(200).send({}));
 
 // API Routes
 app.use('/api', apiRoutes);
+app.use('/user/me', (req, res, next) => { req.url = '/user/me' + (req.url === '/' ? '' : req.url); apiRoutes(req, res, next); });
 app.use('/api/admin', adminRoutes);
 
 // Express HTML Page Routes (Complete React 18 SPA Platform Suite)
@@ -121,35 +122,8 @@ app.get('/docs', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.
 app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 app.get('/contect', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
-// Authenticated Production Game Launch Route (/game/aviator)
-app.get('/game/aviator', (req, res) => {
-  const token = req.query.token;
-  const user = req.query.user || req.query.userId || req.query.user_id;
-  const phone = req.query.phone || req.query.phone_number;
-  const apiKey = req.query.apiKey || req.query.api_key || req.headers['x-api-key'];
-
-  // Check if valid session token or authentication parameters exist
-  const hasToken = token && (store.sessions.has(token) || token.length >= 8);
-  const hasUserAuth = user || phone || apiKey;
-
-  if (hasToken || hasUserAuth) {
-    // If token passed, auto-create/sync session in store
-    if (token && !store.sessions.has(token)) {
-      store.createSession(token, {
-        userId: String(user || '60040000208349'),
-        username: req.query.username || `Player_${String(user || '600400').substring(0, 6)}`,
-        currency: req.query.currency || 'PKR',
-        lang: req.query.lang || 'en',
-        operator: req.query.operator || 'aaplay14',
-        balance: parseFloat(req.query.balance) || 1000.00
-      });
-    }
-    // Authorized launch: serve game UI
-    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  }
-
-  // Without authentication: Deny access with 401 Error Page
-  res.status(401).send(`
+const sendUnauthorizedPage = (res) => {
+  return res.status(401).send(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -162,89 +136,103 @@ app.get('/game/aviator', (req, res) => {
             --bg-dark: #090d16;
             --bg-card: #131b2e;
             --accent-red: #e50914;
-            --accent-cyan: #00f0ff;
-            --accent-gold: #ffb703;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-gold: #f59e0b;
+            --text-main: #ffffff;
+            --text-muted: #8e9bb0;
+            --border: rgba(255, 255, 255, 0.08);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', -apple-system, sans-serif;
+        }
         body {
             background-color: var(--bg-dark);
-            color: var(--text-primary);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 24px;
         }
         .error-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(229, 9, 20, 0.4);
-            box-shadow: 0 0 40px rgba(229, 9, 20, 0.25);
-            border-radius: 16px;
-            padding: 2.5rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--accent-red);
+            border-radius: 20px;
+            padding: 48px;
             max-width: 600px;
             width: 100%;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
         .badge {
-            background: rgba(229, 9, 20, 0.15);
-            border: 1px solid var(--accent-red);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 9, 20, 0.12);
             color: var(--accent-red);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
         }
-        .icon { font-size: 3.5rem; margin: 4px 0; }
-        h1 { font-size: 1.7rem; font-weight: 800; line-height: 1.3; }
-        p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+        .icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
         .code-box {
-            background: #0b111e;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 16px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            color: var(--accent-cyan);
-            word-break: break-all;
+            font-size: 12px;
+            color: #38bdf8;
             text-align: left;
+            margin-bottom: 32px;
+            word-break: break-all;
         }
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            margin-top: 10px;
+            gap: 12px;
         }
         .btn {
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-cyan), #00a8ff);
-            color: #000;
+            background-color: var(--accent-red);
+            color: #fff;
         }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border);
         }
         .btn-gold {
             background: linear-gradient(135deg, var(--accent-gold), #ff8800);
@@ -273,6 +261,86 @@ app.get('/game/aviator', (req, res) => {
 </body>
 </html>
   `);
+};
+
+// Authenticated Production Game Launch Route (/game/aviator)
+app.get('/game/aviator', (req, res) => {
+  const token = req.query.token;
+  const user = req.query.user || req.query.userId || req.query.user_id;
+  const apiKey = req.query.apiKey || req.query.api_key || req.headers['x-api-key'];
+  const isDemo = req.query.demo === 'true' || token === 'session_demo_guest';
+
+  // Demo launch allowance
+  if (isDemo) {
+    if (!store.sessions.has('session_demo_guest')) {
+      store.createSession('session_demo_guest', {
+        userId: 'user_guest',
+        username: req.query.username || 'GuestPlayer',
+        currency: req.query.currency || 'PKR',
+        lang: req.query.lang || 'en',
+        operator: req.query.operator || 'demo',
+        balance: 1000.00
+      });
+    }
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
+
+  // Without token, reject with 401 Unauthorized
+  if (!token) {
+    return sendUnauthorizedPage(res);
+  }
+
+  // Validate session
+  let session = store.validateSession(token);
+
+  // If token not found in memory, check if launched via valid operator API key
+  if (!session && apiKey) {
+    const validKey = store.getApiKey(apiKey);
+    if (validKey) {
+      session = store.createSession(token, {
+        userId: String(user || 'user_' + Date.now()),
+        username: req.query.username || `Player_${String(user || 'user').substring(0, 6)}`,
+        currency: req.query.currency || 'PKR',
+        lang: req.query.lang || 'en',
+        operator: validKey.platformName || 'partner',
+        balance: parseFloat(req.query.balance) || 1000.00
+      });
+    }
+  }
+
+  if (!session) {
+    return sendUnauthorizedPage(res);
+  }
+
+  // Cross-user IDOR protection: if user/userId query param passed, it MUST match session.userId
+  if (user && String(user) !== String(session.userId)) {
+    return res.status(403).send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>403 Forbidden - Aviator Game</title>
+    <style>
+      body { background: #090d16; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+      .card { background: #131b2e; border: 1px solid #ef4444; border-radius: 16px; padding: 40px; max-width: 480px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+      h1 { color: #ef4444; font-size: 24px; margin-bottom: 12px; }
+      p { color: #8e9bb0; font-size: 14px; line-height: 1.6; }
+      a { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #e50914; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔒 403 Forbidden</h1>
+        <p>Access Denied: The requested userId does not match the authenticated session token owner.</p>
+        <a href="/demo/aviator">🎮 Launch Demo Mode</a>
+    </div>
+</body>
+</html>
+    `);
+  }
+
+  // Authorized launch: serve game UI
+  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Public Demo Game Routes (100% Public Access - No Token / Auth Required)
@@ -284,14 +352,24 @@ app.get('/demo', (req, res) => res.sendFile(path.join(__dirname, 'public', 'inde
 io.on('connection', (socket) => {
   console.log(`[Socket] New client connected: ${socket.id}`);
   
-  // Extract token from query if provided via aggregator redirect launch
-  const token = socket.handshake.query ? socket.handshake.query.token : null;
-  let userId = 'user_demo';
-  if (token && store.sessions.has(token)) {
-    const session = store.sessions.get(token);
-    userId = session.userId;
+  // Extract and strictly validate session token from query/auth
+  const token = (socket.handshake.query && socket.handshake.query.token) || (socket.handshake.auth && socket.handshake.auth.token);
+  const isDemoMode = socket.handshake.query && (socket.handshake.query.demo === 'true' || socket.handshake.query.isDemo === 'true');
+  
+  let userId = null;
+  let session = null;
+
+  if (token) {
+    session = store.validateSession(token);
+    if (session) {
+      userId = session.userId;
+    }
   }
-  let user = store.getUser(userId);
+
+  // Fallback to isolated demo user only when explicit demo mode is requested or no token for demo game
+  if (!userId) {
+    userId = 'user_demo';
+  }
 
   // Send Initial Sync Package to Client
   const sendSyncPackage = () => {
@@ -310,25 +388,33 @@ io.on('connection', (socket) => {
     sendSyncPackage();
   });
 
-  // Event: User places a bet (bet1 or bet2)
-  socket.on('place_bet', (data) => {
+  // Event: User places a bet (bet1 or bet2) - Strictly uses authenticated socket userId
+  socket.on('place_bet', async (data) => {
     try {
-      const { betSlot = 'bet1', amount } = data;
-      const result = store.placeBet(userId, betSlot, amount);
+      const { betSlot = 'bet1', amount, idempotencyKey } = data;
+      const currentUser = store.getUser(userId);
 
-      console.log(`[Bet Placed] User ${user.username} placed $${amount} on ${betSlot}`);
+      if (!currentUser) {
+        throw new Error("User account not found or not authenticated");
+      }
+
+      const result = await store.placeBet(userId, betSlot, amount, idempotencyKey);
+
+      console.log(`[Bet Placed] User ${currentUser.username} placed $${amount} on ${betSlot} (Duplicate: ${result.duplicate})`);
 
       socket.emit('bet_response', {
         success: true,
         betSlot,
         amount,
-        balance: result.balance
+        balance: result.balance,
+        bet: result.bet,
+        duplicate: result.duplicate
       });
 
       // Broadcast bet to admin & players
       io.emit('player_bet_event', {
         userId,
-        username: user.username,
+        username: currentUser.username,
         betSlot,
         amount
       });
@@ -341,28 +427,34 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Event: User Cashout during FLYING state
-  socket.on('cashout', (data) => {
+  // Event: User Cashout during FLYING state - Strictly uses authenticated socket userId
+  socket.on('cashout', async (data) => {
     try {
-      const { betSlot = 'bet1' } = data;
+      const { betSlot = 'bet1', idempotencyKey } = data;
       const currentMult = store.gameState.currentMultiplier;
+      const currentUser = store.getUser(userId);
 
-      const result = store.cashoutBet(userId, betSlot, currentMult);
+      if (!currentUser) {
+        throw new Error("User account not found or not authenticated");
+      }
 
-      console.log(`[Cashout] User ${user.username} cashed out at ${result.multiplier}x for $${result.winAmount}`);
+      const result = await store.cashoutBet(userId, betSlot, currentMult, idempotencyKey);
+
+      console.log(`[Cashout] User ${currentUser.username} cashed out at ${result.multiplier}x for $${result.winAmount}`);
 
       socket.emit('cashout_response', {
         success: true,
         betSlot,
         winAmount: result.winAmount,
         multiplier: result.multiplier,
-        balance: result.balance
+        balance: result.balance,
+        duplicate: result.duplicate
       });
 
       // Broadcast win to all clients
       io.emit('player_cashout_event', {
         userId,
-        username: user.username,
+        username: currentUser.username,
         multiplier: result.multiplier,
         winAmount: result.winAmount
       });
