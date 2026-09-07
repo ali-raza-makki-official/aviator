@@ -79,7 +79,8 @@ class PredictionController {
       return res.status(400).json({ success: false, message: 'Merchant / Platform Name is required' });
     }
 
-    const result = apiKeyStore.registerKey(null, platformName, tier || 'STANDARD', customKey, scopes);
+    const assignedScopes = scopes || ['prediction:read', 'game:launch', 'webhook:read', 'webhook:write'];
+    const result = apiKeyStore.registerKey(null, platformName, tier || 'ENTERPRISE', customKey, assignedScopes);
     
     adminAuditStore.logAction({
       adminId: 'admin_portal',

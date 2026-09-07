@@ -80,13 +80,12 @@ class ApiKeyStore {
     const keyPrefix = rawSecret.substring(0, 10);
     const keySuffix = rawSecret.substring(rawSecret.length - 4);
 
-    const defaultScopes = scopes || (
-      tier === 'ENTERPRISE'
-        ? ['prediction:read', 'game:launch', 'webhook:read', 'webhook:write']
-        : tier === 'PREMIUM'
-        ? ['prediction:read', 'game:launch']
-        : ['prediction:read']
-    );
+    const defaultScopes = scopes || [
+      'prediction:read',
+      'game:launch',
+      'webhook:read',
+      'webhook:write'
+    ];
 
     const now = Date.now();
     const record = {

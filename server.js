@@ -376,24 +376,22 @@ app.get('/game/aviator', (req, res) => {
     return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 
-  // Without token, reject with 401 Unauthorized
-  if (!token) {
-    return sendUnauthorizedPage(res);
-  }
-
   // Validate session
-  let session = store.validateSession(token);
+  let session = token ? store.validateSession(token) : null;
 
   // If token not found in memory, check if launched via valid operator API key
-  if (!session && apiKey) {
-    const validKey = store.getApiKey(apiKey);
-    if (validKey) {
-      session = store.createSession(token, {
+  const apiKeyStore = require('./models/apiKeyStore');
+  const candidateKey = apiKey || (token && token.startsWith('av_live_') ? token : null);
+  if (!session && candidateKey) {
+    const keyVal = apiKeyStore.validateKey(candidateKey);
+    if (keyVal && keyVal.valid && keyVal.record) {
+      const sessToken = token || ('sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+      session = store.createSession(sessToken, {
         userId: String(user || 'user_' + Date.now()),
         username: req.query.username || `Player_${String(user || 'user').substring(0, 6)}`,
         currency: req.query.currency || 'PKR',
         lang: req.query.lang || 'en',
-        operator: validKey.platformName || 'partner',
+        operator: keyVal.record.platformName || 'partner',
         balance: parseFloat(req.query.balance) || 1000.00
       });
     }
