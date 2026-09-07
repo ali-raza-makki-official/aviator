@@ -370,14 +370,14 @@ fetch('http://localhost:3000/api/v1/predict')
                 h('div', { key: 'stats-grid', style: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' } }, [
                     h('div', { key: 's1', className: 'feature-card', style: { border: '1px solid rgba(0, 240, 255, 0.3)' } }, [
                         h('div', { key: 'l', style: { fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' } }, 'Live Scheduled Target'),
-                        h('div', { key: 'v', style: { fontSize: '2.5rem', fontWeight: '800', color: '#00f0ff', fontFamily: 'JetBrains Mono, monospace', margin: '4px 0' } }, `${parseFloat(targetMultiplier).toFixed(2)}x`),
-                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: '#10b981' } }, 'RNG Engine Active')
+                        h('div', { key: 'v', style: { fontSize: '2.5rem', fontWeight: '800', color: '#00f0ff', fontFamily: 'JetBrains Mono, monospace', margin: '4px 0' } }, `${parseFloat((gameState && gameState.targetCrashMultiplier) || targetMultiplier || 2.00).toFixed(2)}x`),
+                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: gameState && gameState.status === 'FLYING' ? '#10b981' : '#00f0ff' } }, gameState && gameState.status === 'FLYING' ? `Flying: ${parseFloat(gameState.currentMultiplier || 1.00).toFixed(2)}x` : `Round #${(gameState && gameState.roundId) || 1001}`)
                     ]),
 
                     h('div', { key: 's2', className: 'feature-card' }, [
                         h('div', { key: 'l', style: { fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' } }, 'Engine Status'),
-                        h('div', { key: 'v', style: { fontSize: '1.8rem', fontWeight: '800', color: '#f8fafc', margin: '8px 0' } }, gameState && gameState.status ? gameState.status.toUpperCase() : 'WAITING'),
-                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: '#00f0ff' } }, '60ms Sync Ticks')
+                        h('div', { key: 'v', style: { fontSize: '1.8rem', fontWeight: '800', color: gameState && gameState.status === 'FLYING' ? '#10b981' : gameState && gameState.status === 'CRASHED' ? '#ef4444' : '#ffb703', margin: '8px 0' } }, gameState && gameState.status ? gameState.status.toUpperCase() : 'WAITING'),
+                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: '#00f0ff' } }, '60ms Real-Time Sync')
                     ]),
 
                     h('div', { key: 's3', className: 'feature-card' }, [
@@ -763,7 +763,23 @@ fetch('http://localhost:3000/api/v1/predict')
             setTimeout(() => setToast(null), 4000);
         };
 
+        const fetchGameState = () => {
+            fetch('/api/game/state')
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.success && data.state) {
+                        setGameState(data.state);
+                        if (data.state.targetCrashMultiplier) {
+                            setTargetMultiplier(data.state.targetCrashMultiplier);
+                        }
+                    }
+                })
+                .catch(() => {});
+        };
+
         useEffect(() => {
+            fetchGameState();
+
             const socket = window.io ? window.io() : null;
             if (!socket) return;
 
@@ -777,17 +793,52 @@ fetch('http://localhost:3000/api/v1/predict')
 
             const handleState = (state) => {
                 if (state) {
-                    setGameState(state);
+                    setGameState(prev => ({ ...(prev || {}), ...state }));
                     const t = state.targetCrashMultiplier || (state.gameState && state.gameState.targetCrashMultiplier);
                     if (t) setTargetMultiplier(t);
                     if (state.activeBets) setActiveBets(Object.values(state.activeBets));
                 }
             };
 
+            socket.on('init_sync', (data) => {
+                if (data && data.gameState) {
+                    setGameState(data.gameState);
+                    if (data.gameState.targetCrashMultiplier) {
+                        setTargetMultiplier(data.gameState.targetCrashMultiplier);
+                    }
+                }
+            });
+
+            socket.on('multiplier_update', (d) => {
+                if (d) {
+                    setGameState(prev => ({
+                        ...(prev || {}),
+                        status: 'FLYING',
+                        currentMultiplier: d.multiplier,
+                        roundId: d.roundId
+                    }));
+                }
+            });
+
+            socket.on('game_crash', (d) => {
+                if (d) {
+                    setGameState(prev => ({
+                        ...(prev || {}),
+                        status: 'CRASHED',
+                        currentMultiplier: d.finalMultiplier,
+                        roundId: d.roundId
+                    }));
+                    if (d.roundHistory) {
+                        // refresh target for next round when available
+                    }
+                }
+            });
+
             socket.on('game_state', handleState);
             socket.on('admin_stats_update', (d) => {
                 if (d && d.gameState && d.gameState.targetCrashMultiplier) {
                     setTargetMultiplier(d.gameState.targetCrashMultiplier);
+                    setGameState(d.gameState);
                 }
             });
 
