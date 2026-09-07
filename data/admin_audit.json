@@ -1,5 +1,86 @@
 [
   {
+    "auditId": "audit_1788810702811_c55a8a7d",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788810702808_d44c9294",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "HostingerCasinoTest",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for HostingerCasinoTest",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788810702811",
+    "timestamp": 1788810702811,
+    "createdAt": "2026-09-07T19:51:42.811Z"
+  },
+  {
+    "auditId": "audit_1788810651928_15d16478",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788810651926_6a942288",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "hbfgvd",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for hbfgvd",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788810651928",
+    "timestamp": 1788810651928,
+    "createdAt": "2026-09-07T19:50:51.928Z"
+  },
+  {
+    "auditId": "audit_1788810193207_82567755",
+    "adminId": "admin_portal",
+    "action": "API_KEY_REVOKED",
+    "targetResource": "key_1788810193150_f47f88e5",
+    "oldValue": null,
+    "newValue": null,
+    "reason": "Security Audit Test Revoke",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788810193207",
+    "timestamp": 1788810193207,
+    "createdAt": "2026-09-07T19:43:13.207Z"
+  },
+  {
+    "auditId": "audit_1788810193194_b27dae5a",
+    "adminId": "system_security",
+    "action": "UNAUTHORIZED_SCOPE_ATTEMPT",
+    "targetResource": "/api/v1/game/launch?user=test_player",
+    "oldValue": null,
+    "newValue": null,
+    "reason": "API key lacked required scope: 'game:launch'",
+    "ip": "::1",
+    "reqId": "req_1788810193194",
+    "timestamp": 1788810193194,
+    "createdAt": "2026-09-07T19:43:13.194Z"
+  },
+  {
+    "auditId": "audit_1788810193153_3bf08f6d",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788810193150_f47f88e5",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "Test Prediction Partner",
+      "tier": "STANDARD",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for Test Prediction Partner",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788810193154",
+    "timestamp": 1788810193154,
+    "createdAt": "2026-09-07T19:43:13.154Z"
+  },
+  {
     "auditId": "audit_1788809584922_a010500f",
     "adminId": "admin_portal",
     "action": "API_KEY_CREATED",

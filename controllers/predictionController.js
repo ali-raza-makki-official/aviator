@@ -93,8 +93,8 @@ class PredictionController {
       success: true,
       message: `API Key successfully generated for Merchant: ${platformName}. Store the secretKey safely; it cannot be shown again.`,
       secretKey: result.secretKey, // Disclosed ONLY ONCE
-      apiKey: result.record,
-      record: result.record
+      apiKey: { ...result.record, apiKey: result.secretKey },
+      record: { ...result.record, apiKey: result.secretKey }
     });
   }
 

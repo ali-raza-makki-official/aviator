@@ -107,5 +107,56 @@
     "expiresAt": "2027-09-07T19:33:04.920Z",
     "lastUsedAt": null,
     "revokedAt": null
+  },
+  {
+    "id": "key_1788810193150_f47f88e5",
+    "platformName": "Test Prediction Partner",
+    "tier": "STANDARD",
+    "keyHash": "163981761d7d240030f89b7a3ecd01835d490d714e14188c6011c721cbbf8c78",
+    "keyPreview": "av_live_1e...c529",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "REVOKED",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 1,
+    "createdAt": "2026-09-07T19:43:13.150Z",
+    "expiresAt": "2027-09-07T19:43:13.150Z",
+    "lastUsedAt": "2026-09-07T19:43:13.184Z",
+    "revokedAt": "2026-09-07T19:43:13.204Z"
+  },
+  {
+    "id": "key_1788810651926_6a942288",
+    "platformName": "hbfgvd",
+    "tier": "STANDARD",
+    "keyHash": "8081dc1aefd74b97019f21df0b3fa348d205f663ff08148567d9a1356d17e10a",
+    "keyPreview": "av_live_99...d5e1",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T19:50:51.926Z",
+    "expiresAt": "2027-09-07T19:50:51.926Z",
+    "lastUsedAt": null,
+    "revokedAt": null
+  },
+  {
+    "id": "key_1788810702808_d44c9294",
+    "platformName": "HostingerCasinoTest",
+    "tier": "STANDARD",
+    "keyHash": "0305eba5ac33387cf6c5b9c4f7024bdb07e8e418f95e8d1f1e055b48bf8ff79d",
+    "keyPreview": "av_live_9e...f7fb",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T19:51:42.808Z",
+    "expiresAt": "2027-09-07T19:51:42.808Z",
+    "lastUsedAt": null,
+    "revokedAt": null
   }
 ]

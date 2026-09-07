@@ -1838,5 +1838,103 @@
       "betSlot": "bet1",
       "multiplier": 2.5
     }
+  },
+  {
+    "txId": "tx_init_1788810174378_e9883c8a",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788810174379,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788810174385_693aab0f",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788810174385,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788810193038_9997bda8",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788810193039,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788810193047_f944da63",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788810193048,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788810193221_00a21fc5",
+    "userId": "user_life_1",
+    "type": "INITIAL_BALANCE",
+    "amount": 500,
+    "balanceBefore": 0,
+    "balanceAfter": 500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_life_1",
+    "timestamp": 1788810193221,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788810613028_6e52315a",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788810613029,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788810613038_21409b42",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788810613038,
+    "metadata": {
+      "isDemo": false
+    }
   }
 ]

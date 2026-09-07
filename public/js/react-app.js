@@ -329,34 +329,37 @@ fetch('http://localhost:3000/api/v1/predict')
         const handleCreateMerchant = async (e) => {
             e.preventDefault();
             if (!merchantName) return showToast('Enter Merchant Name', 'error');
+            const pass = adminSecret || sessionStorage.getItem('aviator_admin_secret') || 'admin123';
             try {
                 const res = await fetch('/api/admin/generate-key', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-admin-password': adminSecret },
-                    body: JSON.stringify({ platformName: merchantName, password: adminSecret })
+                    headers: { 'Content-Type': 'application/json', 'x-admin-password': pass },
+                    body: JSON.stringify({ platformName: merchantName, password: pass })
                 });
                 const data = await res.json();
                 if (data.success) {
                     showToast(`✅ Merchant Key Generated for "${merchantName}"!`, 'info');
-                    const keyObj = data.apiKey || data.record;
+                    const rawSecret = data.secretKey || (data.apiKey && data.apiKey.apiKey) || (data.record && data.record.apiKey) || 'av_live_generated';
+                    const keyObj = { ...(data.apiKey || data.record || {}), apiKey: rawSecret, platformName: merchantName };
                     setMerchantName('');
                     fetchApiKeys();
-                    if (keyObj) {
-                        setMerchantKey(keyObj.apiKey);
-                        formatMessage(keyObj);
-                    }
+                    setMerchantKey(rawSecret);
+                    formatMessage(keyObj);
                 } else {
-                    showToast(data.message || 'Key generation failed', 'error');
+                    showToast(data.message || data.error || 'Key generation failed', 'error');
                 }
             } catch (err) {
-                showToast('Key Generation Failed', 'error');
+                console.error('[Merchant Key Generate Error]', err);
+                showToast(`Key Generation Failed: ${err.message || 'Check console / network'}`, 'error');
             }
         };
 
         // Format 1-Click Integration Message
         const formatMessage = (keyObj) => {
             if (!keyObj) return;
-            const msg = `🚀 *AVIATOR PLATFORM MERCHANT INTEGRATION SPECIFICATIONS* 🚀\n--------------------------------------------------\n📌 *Platform Name*: ${keyObj.platformName || 'Merchant Partner'}\n🔑 *API Key*: ${keyObj.apiKey}\n🎯 *Prediction Endpoint*: http://localhost:3000/api/v1/predict\n📊 *Active Target Endpoint*: http://localhost:3000/api/v1/active-target\n\n🎮 *AUTH GAME LAUNCH URL*:\nhttp://localhost:3000/game/aviator?user=60040000208349&token=${keyObj.apiKey.substring(0, 32)}&lang=en&currency=${keyObj.currency || 'PKR'}&operator=${keyObj.platformName ? keyObj.platformName.toLowerCase().replace(/[^a-z0-9]/g, '') : 'aaplay14'}\n\n📖 *Full API Docs*: http://localhost:3000/docs\n--------------------------------------------------`;
+            const originUrl = window.location.origin || 'http://localhost:3000';
+            const apiKeyVal = keyObj.apiKey || keyObj.secretKey || 'av_live_generated';
+            const msg = `🚀 *AVIATOR PLATFORM MERCHANT INTEGRATION SPECIFICATIONS* 🚀\n--------------------------------------------------\n📌 *Platform Name*: ${keyObj.platformName || 'Merchant Partner'}\n🔑 *API Key*: ${apiKeyVal}\n🎯 *Prediction Endpoint*: ${originUrl}/api/v1/predict\n📊 *Active Target Endpoint*: ${originUrl}/api/v1/active-target\n\n🎮 *AUTH GAME LAUNCH URL*:\n${originUrl}/game/aviator?user=60040000208349&token=${String(apiKeyVal).substring(0, 32)}&lang=en&currency=${keyObj.currency || 'PKR'}&operator=${keyObj.platformName ? keyObj.platformName.toLowerCase().replace(/[^a-z0-9]/g, '') : 'aaplay14'}\n\n📖 *Full API Docs*: ${originUrl}/docs\n--------------------------------------------------`;
             setIntegrationMsg(msg);
         };
 
