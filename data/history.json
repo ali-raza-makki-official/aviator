@@ -1,6 +1,339 @@
 [
   {
     "roundId": 1005,
+    "multiplier": 1.66,
+    "timestamp": 1788776663810,
+    "serverSeed": "a09bfb27e6fa19668621a25d1e84f41df0e5aa10d12d5bce76701703589c896c",
+    "serverSeedHash": "f8972b48764e6b0782095cb47e84edee221cc9036c185ad543373da64c26411f",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1005
+  },
+  {
+    "roundId": 1004,
+    "multiplier": 2.18,
+    "timestamp": 1788776650556,
+    "serverSeed": "0902b46cc6b87b53ebc8675c4ba03a6ad5196d337621812a5a12849c1f8a48be",
+    "serverSeedHash": "013b759035de7fc857fcae04261aa0e6e53176ecf11778766234d1be12696df7",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1004
+  },
+  {
+    "roundId": 1003,
+    "multiplier": 3.44,
+    "timestamp": 1788776634736,
+    "serverSeed": "854d5f66e8e9cd65c52f1cb65a80f6265d7952848646c6bd73542fa87ff5cc8c",
+    "serverSeedHash": "dd23152e35e3161759dfcbd680b3ec617d63244dc9b88fb266c1df40e29b18f0",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1003
+  },
+  {
+    "roundId": 1002,
+    "multiplier": 2.22,
+    "timestamp": 1788776613852,
+    "serverSeed": "294b0f68f73c2adc1fa2d1e339f46f2c233a8fbfc3be5cc605e265260afea9be",
+    "serverSeedHash": "4a69c40d6590cf56e98b65ae281d8c03892fb016e36ddc314f91624c346c9251",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1002
+  },
+  {
+    "roundId": 1001,
+    "multiplier": 2.67,
+    "timestamp": 1788776597855,
+    "serverSeed": "8d94f17aee4144d0e8cb6a78ddea65e87510b01830d0ababd8a31844a469a992",
+    "serverSeedHash": "96f3ea148a12b87fc8c410e693d9b8583cb8ba2efa26c3ef3fd46bad01789fae",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1001
+  },
+  {
+    "roundId": 1002,
+    "multiplier": 6.93,
+    "timestamp": 1788776506787,
+    "serverSeed": "b2ca68ebf787d3755ee915cdf2a4ef0d38d3047c85de8abfcd3363ff921df46e",
+    "serverSeedHash": "a9ecfd2640bc8f0e463c34429c5d7a4155807fcc0b02e62c4fb3d284292f383e",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1002
+  },
+  {
+    "roundId": 1001,
+    "multiplier": 1.29,
+    "timestamp": 1788776475009,
+    "serverSeed": "2227be08760dfae4d506e60c22cc66d3d37b87ae81108e01fc7a0da60c67ba59",
+    "serverSeedHash": "eaf9d851772dd416bd460f433f86048dd534c0cbd2962eb1935cb3b7b8db44b1",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1001
+  },
+  {
+    "roundId": 1035,
+    "multiplier": 1.27,
+    "timestamp": 1788776453451,
+    "serverSeed": "39e432df07241c660ff0552f7009374348bbc33abb4085e47cc18d39a8d1cb2e",
+    "serverSeedHash": "6e78c5345573a0d2d20175b84e5b41cdf0c5f1212e55158bb071887dde2ec2f5",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1035
+  },
+  {
+    "roundId": 1034,
+    "multiplier": 11.33,
+    "timestamp": 1788776442610,
+    "serverSeed": "ae56c0ae4afc9544d7b2d250f708105ce53bb91687264d47cf928c2e5dd27166",
+    "serverSeedHash": "c2971bf7bef98474978dff6be0e2ccda1e49e5eab599bbe3f03289d20332c24b",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1034
+  },
+  {
+    "roundId": 1033,
+    "multiplier": 1.89,
+    "timestamp": 1788776399764,
+    "serverSeed": "996c0552de2344d64d06c9ea6d38f18996b8763a4abdb1db2bad595f3b19cf55",
+    "serverSeedHash": "8116196279b66e0cc2c92cd35bb86667122ba89423daf756b5be71eb0f2d1e5e",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1033
+  },
+  {
+    "roundId": 1032,
+    "multiplier": 3.83,
+    "timestamp": 1788776385334,
+    "serverSeed": "1be9c812cbb1cf3524e109a54cb46400890e8101478e62bea028d5ffb3ecadc9",
+    "serverSeedHash": "96702b5b5946a56547ae9948f6fe73465718da0c953b20257a7f1e576646362e",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1032
+  },
+  {
+    "roundId": 1031,
+    "multiplier": 3.29,
+    "timestamp": 1788776363056,
+    "serverSeed": "728c9b6f2889d3bebb4614725a1d6f83e8389c44ad9b718edb0ac1672bb3442a",
+    "serverSeedHash": "d43ca8b63bc737b347b0c31101bf47f7c46bb64713851d838bf6d0c33d66484c",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1031
+  },
+  {
+    "roundId": 1030,
+    "multiplier": 1.17,
+    "timestamp": 1788776342724,
+    "serverSeed": "fc8bc2a52399e353978f0f05e8d2f4e6ee4584a04ec80d04dae9c8b88180cc4b",
+    "serverSeedHash": "5dd27d05a03e63da261deec876667b94c1601d964319a6d9af8b1a54cd1308a8",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1030
+  },
+  {
+    "roundId": 1029,
+    "multiplier": 2.65,
+    "timestamp": 1788776332663,
+    "serverSeed": "0b7bad69fe955adbe30cae53df79e79699d1634266b09d9be3a0c026f2be89ef",
+    "serverSeedHash": "d430fe641027af3b80abb8ae9771efe3d33b9ccc3686e49e0be0d559f599a0b5",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1029
+  },
+  {
+    "roundId": 1028,
+    "multiplier": 1.18,
+    "timestamp": 1788776314785,
+    "serverSeed": "b80c8dec8ce1ae86fdae9d327f4c0c9a9941b63a70474e9eda2d7e53d89dd0ee",
+    "serverSeedHash": "c4d57077d2626b96db69aa1020dcc37e5db7733b74248650e1e8354ee7e3f6c5",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1028
+  },
+  {
+    "roundId": 1027,
+    "multiplier": 1.01,
+    "timestamp": 1788776304650,
+    "serverSeed": "53e711dfe5018af139814680780d00b28815d0ced73e59f040e3ef0dd5de3b6b",
+    "serverSeedHash": "1ad2d52f3dbcb51ef0183aed2eaa8375636bb8a5210a4c5c26b86e27dbc1fa96",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1027
+  },
+  {
+    "roundId": 1026,
+    "multiplier": 1.05,
+    "timestamp": 1788776296451,
+    "serverSeed": "4df80d5745e17e06cf1fa90d3565b5cf6d1bb1c0ffc5cca388e61ea464eb506d",
+    "serverSeedHash": "32ffe61d71302a80bc8d7d846c720d20782c61a12b81fafec9f160fedab12cba",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1026
+  },
+  {
+    "roundId": 1025,
+    "multiplier": 6.26,
+    "timestamp": 1788776287593,
+    "serverSeed": "b870a528da3d282abaf5581694b23b3700b529643489bd5f7353b1149f9fee9a",
+    "serverSeedHash": "341e9eb86af9df4ce98059e50ea92ac052346e07ae817d42bf55c0ea98145172",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1025
+  },
+  {
+    "roundId": 1024,
+    "multiplier": 2.84,
+    "timestamp": 1788776257723,
+    "serverSeed": "9d3229ef76d52581e54dad14c24d20bc03bda3b417f60a9c15736b9a9d28ebf3",
+    "serverSeedHash": "af301862d35e63d851d9a46da3ca21570d01efabb10f1dc21a023f896d026deb",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1024
+  },
+  {
+    "roundId": 1023,
+    "multiplier": 1.66,
+    "timestamp": 1788776239091,
+    "serverSeed": "07a9bd9b2ede956f856577da3bb948324cc80d67c875f058ac200586bc435543",
+    "serverSeedHash": "692848e09744f1501c494f1f165e4997fc7a18c731b0ff8701ea3ed59c99e365",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1023
+  },
+  {
+    "roundId": 1022,
+    "multiplier": 5.94,
+    "timestamp": 1788776225827,
+    "serverSeed": "9c036f3a5d18ed2da54f1c9a11a75092be3b76867ca19c6905d801dcb7c45aea",
+    "serverSeedHash": "eef3abc886a8da26de373405233231e898b6352653e9f8054655bf80435ce2ca",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1022
+  },
+  {
+    "roundId": 1021,
+    "multiplier": 2.28,
+    "timestamp": 1788776196870,
+    "serverSeed": "dd915002719c4ff11bf111b52fb80e6f7e06b7bff59b1fab18df28f292964397",
+    "serverSeedHash": "a62c4ac16b8040c208187bdf77243cdef94042577be70b44588ae21537e7a4ed",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1021
+  },
+  {
+    "roundId": 1020,
+    "multiplier": 1,
+    "timestamp": 1788776180623,
+    "serverSeed": "68853659ae7f7aaa422abbb9a8d7456cb2f8d55f8d679592bb556483dbd561e8",
+    "serverSeedHash": "93a5287dc1fb6ca60aecd7654a2dcbce79202fa1b29fb3cea6221c7d221a6fe7",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1020
+  },
+  {
+    "roundId": 1019,
+    "multiplier": 4.31,
+    "timestamp": 1788776172553,
+    "serverSeed": "ac3e1e076b48bef02f7458e80d1a1143343e334effede26033bac3ac371cd404",
+    "serverSeedHash": "982569a8883b37e8f9c9c25813367d59f4b2592acc6c75b2cc1093cb67edb99f",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1019
+  },
+  {
+    "roundId": 1018,
+    "multiplier": 1.86,
+    "timestamp": 1788776148674,
+    "serverSeed": "64ddf80774ca328e0b355fbfd2c553682d2f22480f074ed6448626e59bef3e0c",
+    "serverSeedHash": "320bfb0e56359007a417502486b66c17226b716b7192a5cda631c17ba7daaefb",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1018
+  },
+  {
+    "roundId": 1017,
+    "multiplier": 1.93,
+    "timestamp": 1788776134376,
+    "serverSeed": "e1e685736273fab7a7c0eed3c7b4d8d39842c080f275bf9139f59039f3e74682",
+    "serverSeedHash": "4297cb69ba5aca4ba94858f5f0b699633897bb1de914d1da81c3437ede7d9db7",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1017
+  },
+  {
+    "roundId": 1016,
+    "multiplier": 1.08,
+    "timestamp": 1788776119718,
+    "serverSeed": "feed96d6a6994d07eb6602a7b89f99d0d8d0c5303fcd3a5b71c9f826372d286b",
+    "serverSeedHash": "ab88e8a4c923e93734fdd2a38aede5b2a4af7dc0bf0ec60e481cbc4f9b3ae05d",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1016
+  },
+  {
+    "roundId": 1015,
+    "multiplier": 2.12,
+    "timestamp": 1788776110487,
+    "serverSeed": "91fdee5e01582c654194e28bc2493c00bd743b5ff93b943db3b01993d484c46c",
+    "serverSeedHash": "6075095a426130b957b82d8788dc2e01d17496028e40a832e993d078dc8e0732",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1015
+  },
+  {
+    "roundId": 1014,
+    "multiplier": 4.13,
+    "timestamp": 1788776094918,
+    "serverSeed": "beed43774aaf48ea07fa6aa6be527a5b8e11aacbd97f9e820c06a2f918d1bff9",
+    "serverSeedHash": "ae6029eafa74eb2b905a6877ce229268a2328b8d4e288cdb7f63bb2bdc7033df",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1014
+  },
+  {
+    "roundId": 1013,
+    "multiplier": 1.3,
+    "timestamp": 1788776071618,
+    "serverSeed": "e968a7fa5db8aa40fc9e0890e098897c2d963b9487ccc2d9608d10f629ac282c",
+    "serverSeedHash": "70289392415fe9b91fff821cc4212c9e6ff76be5bd4bcb55f35b57d457100a9b",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1013
+  },
+  {
+    "roundId": 1012,
+    "multiplier": 4.24,
+    "timestamp": 1788776060551,
+    "serverSeed": "9d1cd06836be19c64ece198269d791fa4a2335d60fe49ad062adb31bb56ada14",
+    "serverSeedHash": "3a39129e85697cfa93dbdf39afb80ff854a889a93ffe1a83fc1c4b2894070a9c",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1012
+  },
+  {
+    "roundId": 1011,
+    "multiplier": 2.17,
+    "timestamp": 1788776036854,
+    "serverSeed": "21e2b3d2dc12c617993e57ff01d71125516c217fcd12fa6727b3aabc8cf86877",
+    "serverSeedHash": "bf5dab34240760b9daaa9252f409f7c9ad4bd73895c81a2281f42c4e25ca708f",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1011
+  },
+  {
+    "roundId": 1010,
+    "multiplier": 1.15,
+    "timestamp": 1788776021048,
+    "serverSeed": "34736369e760ced705a324a299052332b337d2f8cf9d494ff2939ab3918be7ee",
+    "serverSeedHash": "1fc6c9da55a96e32d97ad46c907231c7e6ba09ac76b37cfa22b35c771e57f9f0",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1010
+  },
+  {
+    "roundId": 1009,
+    "multiplier": 1,
+    "timestamp": 1788776011147,
+    "serverSeed": "ec22204f597fff3638e5f8f6655a1ade230ef06a34cda5dc88382d5649062d88",
+    "serverSeedHash": "fb8d23c53e767b0e50d413d9541105f75c3ffa42cedecc3ea81b6ec4cd9e8706",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1009
+  },
+  {
+    "roundId": 1008,
+    "multiplier": 2.78,
+    "timestamp": 1788776003075,
+    "serverSeed": "37bfa516482b6846df04abfcb753ed39a3c79d543b24807d57ee7968ec593a09",
+    "serverSeedHash": "4a67013a0089f044538b51fcc5fe98c8350461aa945f3287290801940ffc20f6",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1008
+  },
+  {
+    "roundId": 1007,
+    "multiplier": 1.95,
+    "timestamp": 1788775984682,
+    "serverSeed": "ea45606440e00abc5c97130e9a0566ddfbecae4dc1b40cf7aef9b95f23c43125",
+    "serverSeedHash": "e76d762a6ccf9eeea16e7e4a824b7ffcf50735aaa2dae71bb03064e3e6a02599",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1007
+  },
+  {
+    "roundId": 1006,
+    "multiplier": 1.6,
+    "timestamp": 1788775969963,
+    "serverSeed": "2bad13c719ea19e8462796087d82ee2bdaae86258ee3a48fdefdc6c7e264da76",
+    "serverSeedHash": "e68e1a8bb60c589d074e228bedee2a8ab1c15bc945aac0462082b2a2e4209f3c",
+    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 1006
+  },
+  {
+    "roundId": 1005,
     "multiplier": 5.1,
     "timestamp": 1788775957059,
     "serverSeed": "b9999b2b0ab5be3d2d7ab293e94f051e35379d27bb0db8fe18123f59efd9b94a",
@@ -565,218 +898,5 @@
     "serverSeedHash": "df3481b9bd086882186b8b2dbfa82fb60d3aab4db0a700531157c26431897a77",
     "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
     "nonce": 1008
-  },
-  {
-    "roundId": 1007,
-    "multiplier": 19.08,
-    "timestamp": 1788774312415,
-    "serverSeed": "9e9ccbc4dc45ace94c5360d963bd0d4ff8bb5319beb785ba787e9c45e581ef34",
-    "serverSeedHash": "e8aa6ad601906d8139b2d15a9636a7547e148c30f276bfc7b1201b5e06f3354e",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1007
-  },
-  {
-    "roundId": 1006,
-    "multiplier": 4.77,
-    "timestamp": 1788774253149,
-    "serverSeed": "d09a427f519e9c26e717b3f4940e94aa66836531508c0601236108432b0a0050",
-    "serverSeedHash": "f1e7445f194632b6fb74f779a6ff35367d0362aa512564b199bfe054bc168150",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1006
-  },
-  {
-    "roundId": 1005,
-    "multiplier": 2.73,
-    "timestamp": 1788774227715,
-    "serverSeed": "0adca16eec454564528c1bc2d1fe006ea02b65d9a212a9822ec4b819aad32a6d",
-    "serverSeedHash": "5bd12f1df54fd1aa05165f8e115fb46bf154d8978c74be3bf83b39022d7c0af0",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1005
-  },
-  {
-    "roundId": 1004,
-    "multiplier": 5.77,
-    "timestamp": 1788774209523,
-    "serverSeed": "cd74c7c339f91a76b112d1766d62fc323afd3ca59c3c21968c620b80a8ae5fc4",
-    "serverSeedHash": "290f4044aa7048ddc90674efe66227a364732ab9c4be2870817815a62d45c4a1",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1004
-  },
-  {
-    "roundId": 1003,
-    "multiplier": 2.11,
-    "timestamp": 1788774181080,
-    "serverSeed": "14f7bd42e7775ab42ed85d5ec7ea2d163569e4d09b3f1baec6a73a102975e9f1",
-    "serverSeedHash": "bf2339e119c7d051ebd35eb86c1f4f70d17ff58e6cf09e0bc546d96356b8a20b",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1003
-  },
-  {
-    "roundId": 1002,
-    "multiplier": 13.48,
-    "timestamp": 1788774165581,
-    "serverSeed": "802f1338e4ef080809565719c704eae7e52a052fa5ff5ceb428a7be721e2f4ef",
-    "serverSeedHash": "bbca7803a08c2e3d2859de9f918192531c7f0134dfd891087fc8622f51e1c8e4",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1002
-  },
-  {
-    "roundId": 1001,
-    "multiplier": 1.67,
-    "timestamp": 1788774117843,
-    "serverSeed": "baabfd9062323cac5a38a20ce8cb745916204c291b032e9b4592e71612add535",
-    "serverSeedHash": "de99fac3e9de183baea4f9ee4d2df2ee655359fd5147f7802027934793b78ab7",
-    "clientSeed": "0000000000000000000000000000000000000000000000000000000000000000",
-    "nonce": 1001
-  },
-  {
-    "roundId": 1087,
-    "multiplier": 24.19,
-    "timestamp": 1788774090013
-  },
-  {
-    "roundId": 1086,
-    "multiplier": 150.13,
-    "timestamp": 1788774021107
-  },
-  {
-    "roundId": 1085,
-    "multiplier": 1.64,
-    "timestamp": 1788773793432
-  },
-  {
-    "roundId": 1084,
-    "multiplier": 1.63,
-    "timestamp": 1788773780308
-  },
-  {
-    "roundId": 1083,
-    "multiplier": 49.4,
-    "timestamp": 1788773767251
-  },
-  {
-    "roundId": 1082,
-    "multiplier": 1.51,
-    "timestamp": 1788773658121
-  },
-  {
-    "roundId": 1081,
-    "multiplier": 1.84,
-    "timestamp": 1788773645726
-  },
-  {
-    "roundId": 1080,
-    "multiplier": 39.64,
-    "timestamp": 1788773631545
-  },
-  {
-    "roundId": 1079,
-    "multiplier": 7.79,
-    "timestamp": 1788773537009
-  },
-  {
-    "roundId": 1078,
-    "multiplier": 2.02,
-    "timestamp": 1788773502892
-  },
-  {
-    "roundId": 1077,
-    "multiplier": 9.57,
-    "timestamp": 1788773487843
-  },
-  {
-    "roundId": 1076,
-    "multiplier": 6.35,
-    "timestamp": 1788773449185
-  },
-  {
-    "roundId": 1075,
-    "multiplier": 1.75,
-    "timestamp": 1788773419034
-  },
-  {
-    "roundId": 1074,
-    "multiplier": 10.07,
-    "timestamp": 1788773405289
-  },
-  {
-    "roundId": 1073,
-    "multiplier": 1.56,
-    "timestamp": 1788773365413
-  },
-  {
-    "roundId": 1072,
-    "multiplier": 3.31,
-    "timestamp": 1788773352713
-  },
-  {
-    "roundId": 1071,
-    "multiplier": 1.9,
-    "timestamp": 1788773332301
-  },
-  {
-    "roundId": 1070,
-    "multiplier": 5,
-    "timestamp": 1788773317823
-  },
-  {
-    "roundId": 1069,
-    "multiplier": 148.91,
-    "timestamp": 1788773291680
-  },
-  {
-    "roundId": 1068,
-    "multiplier": 4.63,
-    "timestamp": 1788773065292
-  },
-  {
-    "roundId": 1067,
-    "multiplier": 1.32,
-    "timestamp": 1788773040340
-  },
-  {
-    "roundId": 1066,
-    "multiplier": 6.68,
-    "timestamp": 1788773029179
-  },
-  {
-    "roundId": 1065,
-    "multiplier": 2.6,
-    "timestamp": 1788772998109
-  },
-  {
-    "roundId": 1064,
-    "multiplier": 9.4,
-    "timestamp": 1788772980462
-  },
-  {
-    "roundId": 1063,
-    "multiplier": 136.05,
-    "timestamp": 1788772942199
-  },
-  {
-    "roundId": 1062,
-    "multiplier": 7.76,
-    "timestamp": 1788772729059
-  },
-  {
-    "roundId": 1061,
-    "multiplier": 41.51,
-    "timestamp": 1788772695023
-  },
-  {
-    "roundId": 1060,
-    "multiplier": 15.36,
-    "timestamp": 1788772597615
-  },
-  {
-    "roundId": 1059,
-    "multiplier": 4.43,
-    "timestamp": 1788772545840
-  },
-  {
-    "roundId": 1058,
-    "multiplier": 2.26,
-    "timestamp": 1788772521529
   }
 ]

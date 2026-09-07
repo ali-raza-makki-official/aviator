@@ -114,11 +114,34 @@ class Store {
     return user.balance;
   }
 
-  async placeBet(userId, betSlot, amount, idempotencyKey = null) {
-    const roundId = this.gameState.roundId;
-    const result = await this.walletLedger.placeBet(userId, betSlot, amount, roundId, idempotencyKey);
+  async placeBet(userId, betSlot, amount, roundId = null, idempotencyKey = null) {
+    // 1. Phase Check: Server is sole authority. Bets only accepted during WAITING phase
+    if (this.gameState.status !== 'WAITING') {
+      const err = new Error(`Bet rejected: Game phase '${this.gameState.status}' is not open for betting. Bets are accepted only during the WAITING countdown phase.`);
+      err.code = 'INVALID_GAME_PHASE';
+      err.phase = this.gameState.status;
+      throw err;
+    }
+
+    // 2. Round ID Check: Must be provided and match current server roundId
+    if (roundId === undefined || roundId === null) {
+      const err = new Error("Bet rejected: roundId is required in every bet submission.");
+      err.code = 'MISSING_ROUND_ID';
+      throw err;
+    }
+
+    if (parseInt(roundId) !== parseInt(this.gameState.roundId)) {
+      const err = new Error(`Bet rejected: Submitted roundId (${roundId}) does not match active server roundId (${this.gameState.roundId}).`);
+      err.code = 'ROUND_MISMATCH';
+      err.submittedRoundId = roundId;
+      err.serverRoundId = this.gameState.roundId;
+      throw err;
+    }
+
+    // 3. Process bet atomically through wallet ledger
+    const result = await this.walletLedger.placeBet(userId, betSlot, amount, this.gameState.roundId, idempotencyKey);
     
-    // Also track in activeBets in-memory map for round management
+    // Track in activeBets map for round settlement
     if (!this.activeBets.has(userId)) {
       this.activeBets.set(userId, {});
     }
@@ -129,13 +152,28 @@ class Store {
     return result;
   }
 
-  async cashoutBet(userId, betSlot, currentMultiplier, idempotencyKey = null) {
-    const roundId = this.gameState.roundId;
+  async cashoutBet(userId, betSlot, roundId = null, idempotencyKey = null) {
+    // 1. Phase Check: Cashouts are only permitted while FLYING (reject after crash / during waiting)
     if (this.gameState.status !== 'FLYING') {
-      throw new Error("Game is not flying");
+      const err = new Error(`Cashout rejected: Game is '${this.gameState.status}'. Cashouts are only permitted while the game is FLYING.`);
+      err.code = 'INVALID_CASHOUT_PHASE';
+      err.phase = this.gameState.status;
+      throw err;
     }
 
-    const result = await this.walletLedger.cashoutBet(userId, betSlot, roundId, currentMultiplier, idempotencyKey);
+    // 2. Round ID Check: If provided, must match active server round
+    if (roundId !== null && roundId !== undefined && parseInt(roundId) !== parseInt(this.gameState.roundId)) {
+      const err = new Error(`Cashout rejected: Submitted roundId (${roundId}) does not match active server roundId (${this.gameState.roundId}).`);
+      err.code = 'ROUND_MISMATCH';
+      err.submittedRoundId = roundId;
+      err.serverRoundId = this.gameState.roundId;
+      throw err;
+    }
+
+    // 3. Multiplier Authority: Server determines the authoritative multiplier, client cannot override
+    const serverMultiplier = this.gameState.currentMultiplier;
+
+    const result = await this.walletLedger.cashoutBet(userId, betSlot, this.gameState.roundId, serverMultiplier, idempotencyKey);
     
     if (this.activeBets.has(userId)) {
       const userBets = this.activeBets.get(userId);
@@ -143,7 +181,9 @@ class Store {
         userBets[betSlot] = result.bet;
       }
     }
-    this.adminControls.totalHousePayoutAmount += result.winAmount;
+    if (!result.duplicate) {
+      this.adminControls.totalHousePayoutAmount += result.winAmount;
+    }
 
     return result;
   }
@@ -262,6 +302,7 @@ class Store {
 
       this.activeBotBets.push({
         botId: bot.id,
+        isBot: true,
         username: bot.username,
         avatar: bot.avatar,
         amount: betAmount,
@@ -277,6 +318,8 @@ class Store {
 
   // Aggregator Launch Session Methods
   createSession(token, sessionData) {
+    const now = Date.now();
+    const SESSION_TTL_MS = 86400000; // 24 Hours TTL
     const session = {
       token,
       userId: sessionData.userId || `user_${Date.now()}`,
@@ -287,7 +330,10 @@ class Store {
       region: sessionData.region || sessionData.country || 'PK',
       callbackUrl: sessionData.callbackUrl || null,
       returnUrl: sessionData.returnUrl || null,
-      createdAt: Date.now()
+      issuedAt: now,
+      createdAt: now,
+      expiresAt: now + SESSION_TTL_MS,
+      revoked: false
     };
     this.sessions.set(token, session);
     // Also create/update user in store
@@ -303,12 +349,22 @@ class Store {
     if (!token) return null;
     const session = this.sessions.get(token);
     if (!session) return null;
-    const SESSION_TTL_MS = 86400000; // 24 Hours TTL
-    if (Date.now() - session.createdAt > SESSION_TTL_MS) {
+    if (session.revoked) return null;
+    if (Date.now() > session.expiresAt) {
       this.sessions.delete(token);
       return null;
     }
     return session;
+  }
+
+  revokeSession(token) {
+    const session = this.sessions.get(token);
+    if (session) {
+      session.revoked = true;
+      session.revokedAt = Date.now();
+      return true;
+    }
+    return false;
   }
 
   // Contact Form Inquiry Methods

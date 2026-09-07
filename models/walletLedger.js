@@ -437,6 +437,7 @@ class WalletLedger {
       this.saveBets();
 
       return {
+        success: true,
         duplicate: false,
         balance: user.balance,
         winAmount,

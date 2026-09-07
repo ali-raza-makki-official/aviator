@@ -25,6 +25,11 @@ router.post('/update-settings', adminController.updateRtpSettings);
 router.get('/keys', (req, res) => predictionController.listApiKeys(req, res));
 router.post('/keys/create', (req, res) => predictionController.createApiKey(req, res));
 router.post('/generate-key', (req, res) => predictionController.createApiKey(req, res));
+router.post('/keys/:id/revoke', (req, res) => predictionController.revokeApiKey(req, res));
+router.post('/keys/:id/rotate', (req, res) => predictionController.rotateApiKey(req, res));
+
+// Immutable Admin Audit Logs
+router.get('/audit-logs', adminController.getAuditLogs);
 
 // Contact Submissions / Inquiry Messages
 router.get('/contact-messages', (req, res) => {

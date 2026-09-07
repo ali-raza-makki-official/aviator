@@ -1,9 +1,17 @@
 const store = require('../models/store');
 const apiKeyStore = require('../models/apiKeyStore');
+const adminAuditStore = require('../models/adminAuditStore');
 
 class PredictionController {
+  // Middleware factory for required scope authorization
+  requireScope(requiredScope) {
+    return (req, res, next) => {
+      this.verifyApiKey(req, res, next, requiredScope);
+    };
+  }
+
   // Middleware to authorize API Key for external gaming platforms
-  verifyApiKey(req, res, next) {
+  verifyApiKey(req, res, next, requiredScope = null) {
     let key = req.headers['x-api-key'] || req.query.apiKey || req.query.api_key;
     
     // Check Authorization Bearer header
@@ -12,16 +20,28 @@ class PredictionController {
       key = authHeader.substring(7).trim();
     }
 
-    const keyRecord = apiKeyStore.validateKey(key);
-    if (!keyRecord) {
-      return res.status(401).json({
+    const validation = apiKeyStore.validateKey(key, requiredScope);
+    if (!validation.valid) {
+      const statusCode = validation.code === 'INSUFFICIENT_SCOPE' ? 403 : (validation.code === 'RATE_LIMIT_EXCEEDED' ? 429 : 401);
+      
+      if (validation.code === 'INSUFFICIENT_SCOPE') {
+        adminAuditStore.logAction({
+          adminId: 'system_security',
+          action: 'UNAUTHORIZED_SCOPE_ATTEMPT',
+          targetResource: req.originalUrl,
+          reason: `API key lacked required scope: '${requiredScope}'`,
+          ip: req.ip || req.connection.remoteAddress
+        });
+      }
+
+      return res.status(statusCode).json({
         success: false,
-        error: 'Unauthorized: Invalid or missing Platform API Key',
-        message: 'Pass a valid API key in x-api-key header or ?apiKey= parameter to access real-time target multiplier data.'
+        error: validation.error,
+        code: validation.code || 'UNAUTHORIZED'
       });
     }
 
-    req.apiKeyRecord = keyRecord;
+    req.apiKeyRecord = validation.record;
     next();
   }
 
@@ -54,25 +74,80 @@ class PredictionController {
   }
 
   createApiKey(req, res) {
-    const { platformName, tier, customKey } = req.body;
+    const { platformName, tier, scopes, customKey } = req.body;
     if (!platformName) {
       return res.status(400).json({ success: false, message: 'Merchant / Platform Name is required' });
     }
 
-    const record = apiKeyStore.registerKey(`key_${Date.now()}`, platformName, tier || 'STANDARD', customKey);
+    const result = apiKeyStore.registerKey(null, platformName, tier || 'STANDARD', customKey, scopes);
+    
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'API_KEY_CREATED',
+      targetResource: result.record.id,
+      newValue: { platformName, tier, scopes: result.record.scopes },
+      reason: `New API key provisioned for ${platformName}`
+    });
+
     res.json({
       success: true,
-      message: `API Key successfully generated for Merchant: ${platformName}`,
-      apiKey: record,
-      record
+      message: `API Key successfully generated for Merchant: ${platformName}. Store the secretKey safely; it cannot be shown again.`,
+      secretKey: result.secretKey, // Disclosed ONLY ONCE
+      apiKey: result.record,
+      record: result.record
     });
   }
 
-  // List all registered integration keys
+  // List all registered integration keys (secrets are NEVER returned)
   listApiKeys(req, res) {
     res.json({
       success: true,
       keys: apiKeyStore.listKeys()
+    });
+  }
+
+  revokeApiKey(req, res) {
+    const keyId = req.params.id || req.body.keyId;
+    const result = apiKeyStore.revokeKey(keyId);
+    if (!result.success) {
+      return res.status(404).json({ success: false, error: result.error });
+    }
+
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'API_KEY_REVOKED',
+      targetResource: keyId,
+      reason: req.body.reason || 'Admin revoked integration API key'
+    });
+
+    res.json({
+      success: true,
+      message: `API key ${keyId} revoked successfully`,
+      record: result.record
+    });
+  }
+
+  rotateApiKey(req, res) {
+    const keyId = req.params.id || req.body.keyId;
+    const result = apiKeyStore.rotateKey(keyId);
+    if (!result.success) {
+      return res.status(404).json({ success: false, error: result.error });
+    }
+
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'API_KEY_ROTATED',
+      targetResource: keyId,
+      oldValue: result.oldKeyId,
+      newValue: result.newRecord.id,
+      reason: req.body.reason || 'Admin rotated integration API key'
+    });
+
+    res.json({
+      success: true,
+      message: `API key ${keyId} rotated successfully. Store the new secretKey safely; it will not be shown again.`,
+      secretKey: result.secretKey, // Disclosed ONLY ONCE
+      newRecord: result.newRecord
     });
   }
 }

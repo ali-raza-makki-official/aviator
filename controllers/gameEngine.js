@@ -19,18 +19,31 @@ class GameEngine {
   }
 
   // Provably Fair Crash Calculation Function (HMAC-SHA256)
-  static calculateProvablyFairCrash(serverSeed, clientSeed, nonce) {
+  static calculateProvablyFairCrash(serverSeed, clientSeed, nonce, options = {}) {
     const hmac = crypto.createHmac('sha256', serverSeed).update(`${clientSeed}:${nonce}`).digest('hex');
     const sub = hmac.substring(0, 13);
     const h = parseInt(sub, 16);
     const e = Math.pow(2, 52);
 
-    // 3% instant crash condition (house edge)
-    if (h % 33 === 0) {
-      return 1.00;
+    // Instant crash probability based on config / options
+    const instantCrashChance = options.instantCrashChance !== undefined 
+      ? options.instantCrashChance 
+      : (config.GAME.INSTANT_CRASH_CHANCE !== undefined ? config.GAME.INSTANT_CRASH_CHANCE : 0.03);
+
+    if (instantCrashChance > 0) {
+      const divisor = Math.max(1, Math.round(1 / instantCrashChance));
+      if (h % divisor === 0) {
+        return 1.00;
+      }
     }
 
-    let multiplier = Math.floor((100 * e - h) / (e - h)) / 100;
+    // RTP / House Edge configuration
+    const rtpPercent = options.rtpPercent !== undefined
+      ? options.rtpPercent
+      : (config.GAME.DEFAULT_RTP_PERCENT || 97);
+    const rtpFactor = Math.min(0.99, Math.max(0.80, rtpPercent / 100));
+
+    let multiplier = Math.floor((100 * e * rtpFactor) / (e - h)) / 100;
     multiplier = Math.max(1.00, multiplier);
     return parseFloat(multiplier.toFixed(2));
   }
@@ -55,10 +68,14 @@ class GameEngine {
     store.gameState.clientSeed = this.currentClientSeed;
     store.gameState.nonce = store.gameState.roundId;
 
+    const rtpPercent = config.GAME.DEFAULT_RTP_PERCENT || 96;
+    const instantCrashChance = config.GAME.INSTANT_CRASH_CHANCE || 0.03;
+
     const fairMultiplier = GameEngine.calculateProvablyFairCrash(
       this.currentServerSeed,
       store.gameState.clientSeed,
-      store.gameState.nonce
+      store.gameState.nonce,
+      { rtpPercent, instantCrashChance }
     );
 
     const minMult = store.adminControls.minCrashMultiplier || 1.00;

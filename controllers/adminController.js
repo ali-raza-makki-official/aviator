@@ -1,5 +1,6 @@
 const store = require('../models/store');
 const config = require('../config/game-config');
+const adminAuditStore = require('../models/adminAuditStore');
 
 class AdminController {
   // Verify Admin Password / Token
@@ -31,12 +32,23 @@ class AdminController {
     const { multiplier } = req.body;
     const mult = parseFloat(multiplier);
 
-    if (isNaN(mult) || mult < 1.00) {
-      return res.status(400).json({ success: false, message: 'Invalid multiplier (must be >= 1.00)' });
+    if (isNaN(mult) || mult < 1.00 || mult > 10000.00) {
+      return res.status(400).json({ success: false, message: 'Invalid multiplier (must be between 1.00x and 10,000.00x)' });
     }
 
+    const oldVal = store.adminControls.forcedNextCrash;
     store.adminControls.forcedNextCrash = mult;
     console.log(`[ADMIN ACTION] Forced Next Crash set to ${mult}x`);
+
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'FORCE_CRASH',
+      targetResource: 'nextRound',
+      oldValue: oldVal,
+      newValue: mult,
+      reason: req.body.reason || 'Admin set forced crash multiplier',
+      ip: req.ip || req.connection.remoteAddress
+    });
 
     res.json({
       success: true,
@@ -49,6 +61,16 @@ class AdminController {
   triggerEmergencyCrash(req, res) {
     store.adminControls.forcedNextCrash = 1.00;
     console.log(`[ADMIN ACTION] Emergency Crash Triggered!`);
+
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'EMERGENCY_CRASH',
+      targetResource: `round_${store.gameState.roundId}`,
+      oldValue: store.gameState.currentMultiplier,
+      newValue: 1.00,
+      reason: req.body.reason || 'Immediate emergency stop triggered',
+      ip: req.ip || req.connection.remoteAddress
+    });
 
     res.json({
       success: true,
@@ -68,12 +90,23 @@ class AdminController {
         return res.status(404).json({ success: false, error: 'User not found' });
       }
 
+      const oldBalance = user.balance;
       const targetBalance = newBalance !== undefined ? newBalance : balance;
       const result = await store.walletLedger.adminAdjustBalance(targetUserId, {
         newBalance: targetBalance,
         adjustmentAmount,
         adminId: 'admin_portal',
         reason: reason || 'Manual Admin Balance Adjustment'
+      });
+
+      adminAuditStore.logAction({
+        adminId: 'admin_portal',
+        action: 'BALANCE_ADJUSTMENT',
+        targetResource: targetUserId,
+        oldValue: oldBalance,
+        newValue: result.balance,
+        reason: reason || 'Manual Admin Balance Adjustment',
+        ip: req.ip || req.connection.remoteAddress
       });
 
       console.log(`[ADMIN AUDIT] Balance adjusted for ${user.username}: ${result.balance} ${user.currency} (Tx: ${result.tx.txId})`);
@@ -91,44 +124,89 @@ class AdminController {
 
   // Update RTP & Multiplier Range Control Settings
   updateRtpSettings(req, res) {
-    const { rtp, rtpPercent, houseEdge, minHouseProfitPercent, mode, rangeWeights, minCrashMultiplier, maxCrashMultiplier } = req.body;
+    const { rtp, rtpPercent, houseEdge, minCrashMultiplier, maxCrashMultiplier } = req.body;
     const targetRtp = rtpPercent !== undefined ? rtpPercent : rtp;
-    const targetEdge = minHouseProfitPercent !== undefined ? minHouseProfitPercent : houseEdge;
+
+    // Range Validations
+    if (targetRtp !== undefined) {
+      const parsedRtp = parseFloat(targetRtp);
+      if (isNaN(parsedRtp) || parsedRtp < 80.0 || parsedRtp > 99.0) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid RTP percent: must be between 80.0% and 99.0%'
+        });
+      }
+    }
+
+    const proposedMin = minCrashMultiplier !== undefined ? parseFloat(minCrashMultiplier) : store.adminControls.minCrashMultiplier;
+    const proposedMax = maxCrashMultiplier !== undefined ? parseFloat(maxCrashMultiplier) : store.adminControls.maxCrashMultiplier;
+
+    if (proposedMin < 1.00) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid minCrashMultiplier: must be >= 1.00x'
+      });
+    }
+
+    if (proposedMax <= proposedMin) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid multiplier range: maxCrashMultiplier must be strictly greater than minCrashMultiplier'
+      });
+    }
+
+    const oldSettings = {
+      rtpPercent: config.GAME.DEFAULT_RTP_PERCENT,
+      minCrashMultiplier: store.adminControls.minCrashMultiplier,
+      maxCrashMultiplier: store.adminControls.maxCrashMultiplier
+    };
 
     if (targetRtp !== undefined) {
-      config.GAME.DEFAULT_RTP_PERCENT = Math.min(100, Math.max(1, parseFloat(targetRtp)));
+      config.GAME.DEFAULT_RTP_PERCENT = parseFloat(targetRtp);
+      config.GAME.HOUSE_EDGE = parseFloat(((100 - parseFloat(targetRtp)) / 100).toFixed(4));
     }
-    if (targetEdge !== undefined) {
-      store.adminControls.minHouseProfitPercent = parseFloat(targetEdge);
-    }
-    if (mode && ['AUTO', 'FIXED', 'KILL_ALL'].includes(mode)) {
-      store.adminControls.mode = mode;
+    if (houseEdge !== undefined) {
+      config.GAME.HOUSE_EDGE = Math.min(0.20, Math.max(0.01, parseFloat(houseEdge)));
     }
 
-    if (rangeWeights && typeof rangeWeights === 'object') {
-      store.adminControls.rangeWeights = {
-        low: parseFloat(rangeWeights.low) || 0,
-        med: parseFloat(rangeWeights.med) || 0,
-        high: parseFloat(rangeWeights.high) || 0,
-        ultra: parseFloat(rangeWeights.ultra) || 0
-      };
-    }
+    store.adminControls.minCrashMultiplier = proposedMin;
+    store.adminControls.maxCrashMultiplier = proposedMax;
 
-    if (minCrashMultiplier !== undefined && !isNaN(parseFloat(minCrashMultiplier))) {
-      store.adminControls.minCrashMultiplier = parseFloat(minCrashMultiplier);
-    }
-
-    if (maxCrashMultiplier !== undefined && !isNaN(parseFloat(maxCrashMultiplier))) {
-      store.adminControls.maxCrashMultiplier = parseFloat(maxCrashMultiplier);
-    }
-
-    console.log(`[ADMIN ACTION] Updated RTP: ${config.GAME.DEFAULT_RTP_PERCENT}%, Mode: ${store.adminControls.mode}, RangeWeights:`, store.adminControls.rangeWeights);
+    adminAuditStore.logAction({
+      adminId: 'admin_portal',
+      action: 'CONFIG_UPDATE',
+      targetResource: 'gameConfig',
+      oldValue: oldSettings,
+      newValue: {
+        rtpPercent: config.GAME.DEFAULT_RTP_PERCENT,
+        houseEdge: config.GAME.HOUSE_EDGE,
+        minCrashMultiplier: store.adminControls.minCrashMultiplier,
+        maxCrashMultiplier: store.adminControls.maxCrashMultiplier
+      },
+      reason: req.body.reason || 'Admin updated RTP & Multiplier range settings',
+      ip: req.ip || req.connection.remoteAddress
+    });
 
     res.json({
       success: true,
       message: 'RTP & Multiplier Range Settings updated successfully',
       rtpPercent: config.GAME.DEFAULT_RTP_PERCENT,
+      houseEdge: config.GAME.HOUSE_EDGE,
       adminControls: store.adminControls
+    });
+  }
+
+  // Immutable Admin Audit Log Viewer
+  getAuditLogs(req, res) {
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const action = req.query.action || null;
+    const adminId = req.query.adminId || null;
+
+    const data = adminAuditStore.getAuditLogs(limit, offset, { action, adminId });
+    res.json({
+      success: true,
+      ...data
     });
   }
 }

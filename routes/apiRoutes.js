@@ -4,9 +4,9 @@ const store = require('../models/store');
 const predictionController = require('../controllers/predictionController');
 
 // Authorized Live Target Multiplier Prediction API Endpoint
-// External gaming platforms / prediction tools call this endpoint with ?apiKey=... or x-api-key header
-router.get('/v1/predict', predictionController.verifyApiKey, predictionController.getActiveRoundPrediction);
-router.get('/v1/active-target', predictionController.verifyApiKey, predictionController.getActiveRoundPrediction);
+// External gaming platforms / prediction tools call this endpoint with Bearer token or x-api-key header
+router.get('/v1/predict', predictionController.requireScope('prediction:read'), predictionController.getActiveRoundPrediction);
+router.get('/v1/active-target', predictionController.requireScope('prediction:read'), predictionController.getActiveRoundPrediction);
 
 // Get User Information & Balance (Secured with Token Authentication & Authorization)
 router.get('/user/me', (req, res) => {
@@ -178,8 +178,8 @@ const handleGameLaunch = (req, res) => {
   });
 };
 
-router.get('/v1/game/launch', predictionController.verifyApiKey, handleGameLaunch);
-router.post('/v1/game/launch', predictionController.verifyApiKey, handleGameLaunch);
+router.get('/v1/game/launch', predictionController.requireScope('game:launch'), handleGameLaunch);
+router.post('/v1/game/launch', predictionController.requireScope('game:launch'), handleGameLaunch);
 
 // Retrieve Active Session Details by Token (Secured via validateSession)
 router.get('/v1/game/session', (req, res) => {
@@ -200,7 +200,7 @@ router.get('/v1/game/session', (req, res) => {
 });
 
 // Authorized Webhook Management & Register Endpoints (GET / POST)
-router.get('/v1/webhooks', predictionController.verifyApiKey, (req, res) => {
+router.get('/v1/webhooks', predictionController.requireScope('webhook:read'), (req, res) => {
   res.json({
     success: true,
     service: 'Aviator Real-Time Event Webhook Service',
@@ -214,13 +214,25 @@ router.get('/v1/webhooks', predictionController.verifyApiKey, (req, res) => {
   });
 });
 
-const handleWebhookRegister = (req, res) => {
+const ssrfValidator = require('../utils/ssrfValidator');
+
+const handleWebhookRegister = async (req, res) => {
   const params = req.method === 'POST' ? req.body : req.query;
   const targetUrl = params.targetUrl || req.query.targetUrl || req.query.url;
   const platform = params.platform || req.query.platform || (req.apiKeyRecord ? req.apiKeyRecord.platformName : 'Partner Platform');
 
   if (!targetUrl) {
     return res.status(400).json({ success: false, message: 'targetUrl parameter is required (e.g. ?targetUrl=https://your-domain.com/webhook&apiKey=...)' });
+  }
+
+  // SSRF Validation: Block localhost, RFC1918 private IPs, AWS/cloud metadata 169.254.169.254
+  const validation = await ssrfValidator.validateWebhookUrl(targetUrl);
+  if (!validation.valid) {
+    return res.status(400).json({
+      success: false,
+      error: 'Blocked destination address (SSRF Protection)',
+      message: validation.error
+    });
   }
 
   const webhook = store.addWebhook({ platform, targetUrl });
@@ -231,8 +243,8 @@ const handleWebhookRegister = (req, res) => {
   });
 };
 
-router.get('/v1/webhooks/register', predictionController.verifyApiKey, handleWebhookRegister);
-router.post('/v1/webhooks/register', predictionController.verifyApiKey, handleWebhookRegister);
+router.get('/v1/webhooks/register', predictionController.requireScope('webhook:write'), handleWebhookRegister);
+router.post('/v1/webhooks/register', predictionController.requireScope('webhook:write'), handleWebhookRegister);
 
 // Submit Contact Form Inquiry
 router.post('/contact', (req, res) => {

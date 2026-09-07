@@ -107,10 +107,38 @@ app.use((req, res, next) => {
 app.all('*sentry*', (req, res) => res.status(200).send({}));
 app.all('*/api/10/envelope*', (req, res) => res.status(200).send({}));
 
+// Configured Allowed Origins
+const allowedAdminOrigins = (process.env.ADMIN_ALLOWED_ORIGINS || process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000').split(',').map(s => s.trim());
+
+const adminCors = cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedAdminOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    const err = new Error('CORS blocked: Origin not authorized for Admin operations');
+    err.status = 403;
+    return callback(err);
+  },
+  credentials: true
+});
+
 // API Routes
 app.use('/api', apiRoutes);
 app.use('/user/me', (req, res, next) => { req.url = '/user/me' + (req.url === '/' ? '' : req.url); apiRoutes(req, res, next); });
-app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminCors, adminRoutes);
+
+// CORS Error Handling Middleware
+app.use((err, req, res, next) => {
+  if (err && err.message && err.message.includes('CORS')) {
+    return res.status(403).json({
+      success: false,
+      error: 'CORS Forbidden: Origin not permitted for private endpoint',
+      message: err.message
+    });
+  }
+  next(err);
+});
 
 // Express HTML Page Routes (Complete React 18 SPA Platform Suite)
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
@@ -391,21 +419,24 @@ io.on('connection', (socket) => {
   // Event: User places a bet (bet1 or bet2) - Strictly uses authenticated socket userId
   socket.on('place_bet', async (data) => {
     try {
-      const { betSlot = 'bet1', amount, idempotencyKey } = data;
+      const { betSlot = 'bet1', amount, roundId, idempotencyKey } = (data || {});
       const currentUser = store.getUser(userId);
 
       if (!currentUser) {
         throw new Error("User account not found or not authenticated");
       }
 
-      const result = await store.placeBet(userId, betSlot, amount, idempotencyKey);
+      // Server is sole authority for timing and round validation
+      const targetRoundId = roundId !== undefined ? roundId : store.gameState.roundId;
+      const result = await store.placeBet(userId, betSlot, amount, targetRoundId, idempotencyKey);
 
-      console.log(`[Bet Placed] User ${currentUser.username} placed $${amount} on ${betSlot} (Duplicate: ${result.duplicate})`);
+      console.log(`[Bet Placed] User ${currentUser.username} placed $${amount} on ${betSlot} for Round #${targetRoundId} (Duplicate: ${result.duplicate})`);
 
       socket.emit('bet_response', {
         success: true,
         betSlot,
         amount,
+        roundId: targetRoundId,
         balance: result.balance,
         bet: result.bet,
         duplicate: result.duplicate
@@ -422,6 +453,7 @@ io.on('connection', (socket) => {
     } catch (err) {
       socket.emit('bet_response', {
         success: false,
+        code: err.code || 'BET_REJECTED',
         message: err.message
       });
     }
@@ -430,21 +462,23 @@ io.on('connection', (socket) => {
   // Event: User Cashout during FLYING state - Strictly uses authenticated socket userId
   socket.on('cashout', async (data) => {
     try {
-      const { betSlot = 'bet1', idempotencyKey } = data;
-      const currentMult = store.gameState.currentMultiplier;
+      const { betSlot = 'bet1', roundId, idempotencyKey } = (data || {});
       const currentUser = store.getUser(userId);
 
       if (!currentUser) {
         throw new Error("User account not found or not authenticated");
       }
 
-      const result = await store.cashoutBet(userId, betSlot, currentMult, idempotencyKey);
+      // Multiplier determined strictly by server; client cannot submit multiplier
+      const targetRoundId = roundId !== undefined ? roundId : store.gameState.roundId;
+      const result = await store.cashoutBet(userId, betSlot, targetRoundId, idempotencyKey);
 
-      console.log(`[Cashout] User ${currentUser.username} cashed out at ${result.multiplier}x for $${result.winAmount}`);
+      console.log(`[Cashout] User ${currentUser.username} cashed out at ${result.multiplier}x for $${result.winAmount} (Round #${targetRoundId})`);
 
       socket.emit('cashout_response', {
         success: true,
         betSlot,
+        roundId: targetRoundId,
         winAmount: result.winAmount,
         multiplier: result.multiplier,
         balance: result.balance,
@@ -462,6 +496,7 @@ io.on('connection', (socket) => {
     } catch (err) {
       socket.emit('cashout_response', {
         success: false,
+        code: err.code || 'CASHOUT_REJECTED',
         message: err.message
       });
     }

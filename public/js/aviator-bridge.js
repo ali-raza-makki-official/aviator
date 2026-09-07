@@ -1097,10 +1097,12 @@
     requestAnimationFrame(renderLoop);
 
     window.placeAviatorBet = function(amount, autoCashout = 0) {
-        socket.emit('place_bet', { betSlot: 'bet1', amount, autoCashout });
+        const roundId = (window.aviatorState && window.aviatorState.roundId) || null;
+        socket.emit('place_bet', { betSlot: 'bet1', amount, roundId, autoCashout });
     };
 
     window.cashoutAviatorBet = function() {
-        socket.emit('cashout', { betSlot: 'bet1' });
+        const roundId = (window.aviatorState && window.aviatorState.roundId) || null;
+        socket.emit('cashout', { betSlot: 'bet1', roundId });
     };
 })();

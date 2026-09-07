@@ -281,7 +281,7 @@ class BetControlsComponent {
       currentBet.multiplier = this.currentMultiplier;
       currentBet.winAmount = parseFloat((currentBet.amount * this.currentMultiplier).toFixed(2));
       this.updateBetButtonsUI();
-      if (socket) socket.emit('cashout', { betSlot: slotKey });
+      if (socket) socket.emit('cashout', { betSlot: slotKey, roundId: this.currentRoundId });
     } else if (!currentBet || currentBet.status !== 'ACTIVE') {
       console.log(`[BetControls] Placing bet of amount ${amount} on ${slotKey}...`);
       // Optimistic 0ms instant bet placement UI lock
@@ -292,12 +292,13 @@ class BetControlsComponent {
         optimistic: true
       };
       this.updateBetButtonsUI();
-      if (socket) socket.emit('place_bet', { betSlot: slotKey, amount });
+      if (socket) socket.emit('place_bet', { betSlot: slotKey, amount, roundId: this.currentRoundId });
     }
   }
 
   onGameState(state) {
     this.currentGameState = state.status || 'WAITING';
+    if (state.roundId) this.currentRoundId = state.roundId;
     if (state.currentMultiplier) this.currentMultiplier = state.currentMultiplier;
 
     if (this.currentGameState === 'WAITING') {
@@ -361,7 +362,7 @@ class BetControlsComponent {
     const amount = betInput ? parseFloat(betInput.value) || 16.0 : 16.0;
 
     const socket = window.aviatorSocket;
-    if (socket) socket.emit('place_bet', { betSlot: slotKey, amount });
+    if (socket) socket.emit('place_bet', { betSlot: slotKey, amount, roundId: this.currentRoundId });
   }
 
   checkAutoCashout(slotKey) {
@@ -371,7 +372,7 @@ class BetControlsComponent {
       const targetMult = this.autoStates[slotKey].autoCashoutMult || 1.10;
       if (this.currentMultiplier >= targetMult) {
         const socket = window.aviatorSocket;
-        if (socket) socket.emit('cashout', { betSlot: slotKey });
+        if (socket) socket.emit('cashout', { betSlot: slotKey, roundId: this.currentRoundId });
       }
     }
   }

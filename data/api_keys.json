@@ -1,0 +1,60 @@
+[
+  {
+    "id": "key_master_admin",
+    "platformName": "Master Platform Integrator",
+    "tier": "ENTERPRISE",
+    "keyHash": "2a4252bebb0b057b594b35870b41ee6ce51af54686869df376163cedb00a671d",
+    "keyPreview": "AVIATOR_AP...2026",
+    "scopes": [
+      "prediction:read",
+      "game:launch",
+      "webhook:read",
+      "webhook:write",
+      "admin:read",
+      "admin:write"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 300,
+    "totalRequests": 1,
+    "createdAt": "2026-09-07T10:21:06.977Z",
+    "expiresAt": "2027-09-07T10:21:06.977Z",
+    "lastUsedAt": "2026-09-07T10:24:24.911Z",
+    "revokedAt": null
+  },
+  {
+    "id": "key_platform_alpha",
+    "platformName": "Casino Platform Alpha",
+    "tier": "PREMIUM",
+    "keyHash": "a6ee55b583f4b6e76ee9f24b2888f955dd348726c7d65cec3d959cca149707b0",
+    "keyPreview": "av_live_ke...3210",
+    "scopes": [
+      "prediction:read",
+      "game:launch",
+      "webhook:read"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 120,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T10:21:06.980Z",
+    "expiresAt": "2027-09-07T10:21:06.980Z",
+    "lastUsedAt": null,
+    "revokedAt": null
+  },
+  {
+    "id": "key_1788776632191_da714434",
+    "platformName": "Test Prediction Partner",
+    "tier": "STANDARD",
+    "keyHash": "8a4c404dc101b7e8c3f72c20b514f88ed959886cb935d91cc7a40aa733939ff4",
+    "keyPreview": "av_live_8c...5190",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "REVOKED",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 1,
+    "createdAt": "2026-09-07T10:23:52.191Z",
+    "expiresAt": "2027-09-07T10:23:52.191Z",
+    "lastUsedAt": "2026-09-07T10:23:52.213Z",
+    "revokedAt": "2026-09-07T10:23:52.228Z"
+  }
+]
