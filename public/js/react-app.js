@@ -168,7 +168,7 @@ fetch('http://localhost:3000/api/v1/predict')
     }
 
     // Admin Page Component (Operator Dashboard with 3 Clean SaaS Tabs & Password Lock)
-    function AdminPage({ adminSecret, setAdminSecret, showToast, targetMultiplier, gameState, activeBets, activeSessions, fetchActiveSessions, contactMessages, fetchContactMessages, apiKeys, fetchApiKeys }) {
+    function AdminPage({ adminSecret, setAdminSecret, showToast, targetMultiplier, setTargetMultiplier, gameState, setGameState, activeBets, activeSessions, fetchActiveSessions, contactMessages, fetchContactMessages, apiKeys, fetchApiKeys }) {
         const [isAuthorized, setIsAuthorized] = useState(() => {
             return sessionStorage.getItem('aviator_admin_unlocked') === 'true';
         });
@@ -196,10 +196,12 @@ fetch('http://localhost:3000/api/v1/predict')
             const pass = (inputPass || '').trim().toLowerCase();
             const valid = ['admin123', 'admin', 'aviator_admin_secret_123', (adminSecret || '').toLowerCase()];
             if (valid.includes(pass)) {
+                const chosenSecret = inputPass.trim() || 'admin123';
                 if (typeof setAdminSecret === 'function') {
-                    setAdminSecret(inputPass.trim() || 'admin123');
+                    setAdminSecret(chosenSecret);
                 }
                 sessionStorage.setItem('aviator_admin_unlocked', 'true');
+                sessionStorage.setItem('aviator_admin_secret', chosenSecret);
                 setIsAuthorized(true);
                 showToast('🔓 Admin Portal Unlocked Successfully!', 'info');
             } else {
@@ -224,20 +226,36 @@ fetch('http://localhost:3000/api/v1/predict')
             ]);
         }
 
-        // Fetch Dashboard Data on initial load
+        // Fetch Dashboard Data on initial load and recurring sync
         useEffect(() => {
-            fetch('/api/admin/dashboard', { headers: { 'x-admin-password': adminSecret } })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success && data.adminControls && data.adminControls.rangeWeights) {
-                        setRangeLow(data.adminControls.rangeWeights.low);
-                        setRangeMed(data.adminControls.rangeWeights.med);
-                        setRangeHigh(data.adminControls.rangeWeights.high);
-                        setRangeUltra(data.adminControls.rangeWeights.ultra);
-                        setMinCrash(data.adminControls.minCrashMultiplier || 1.00);
-                        setMaxCrash(data.adminControls.maxCrashMultiplier || 250.00);
-                    }
-                }).catch(() => {});
+            const fetchDashboard = () => {
+                fetch('/api/admin/dashboard', { headers: { 'x-admin-password': adminSecret } })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (data.adminControls && data.adminControls.rangeWeights) {
+                                setRangeLow(data.adminControls.rangeWeights.low);
+                                setRangeMed(data.adminControls.rangeWeights.med);
+                                setRangeHigh(data.adminControls.rangeWeights.high);
+                                setRangeUltra(data.adminControls.rangeWeights.ultra);
+                                setMinCrash(data.adminControls.minCrashMultiplier || 1.00);
+                                setMaxCrash(data.adminControls.maxCrashMultiplier || 250.00);
+                            }
+                            if (data.gameState) {
+                                if (typeof setGameState === 'function') {
+                                    setGameState(prev => ({ ...(prev || {}), ...data.gameState }));
+                                }
+                                if (data.gameState.targetCrashMultiplier && typeof setTargetMultiplier === 'function') {
+                                    setTargetMultiplier(data.gameState.targetCrashMultiplier);
+                                }
+                            }
+                        }
+                    }).catch(() => {});
+            };
+
+            fetchDashboard();
+            const interval = setInterval(fetchDashboard, 2000);
+            return () => clearInterval(interval);
         }, [adminSecret]);
 
         // Emergency Crash Action
@@ -293,7 +311,12 @@ fetch('http://localhost:3000/api/v1/predict')
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`🎯 Next Round Target Forced to ${parseFloat(forceCrashInput).toFixed(2)}x`, 'info');
+                    const forced = Number(data.targetCrashMultiplier || forceCrashInput);
+                    if (typeof setTargetMultiplier === 'function') setTargetMultiplier(forced);
+                    if (typeof setGameState === 'function') {
+                        setGameState(prev => ({ ...(prev || {}), targetCrashMultiplier: forced }));
+                    }
+                    showToast(`🎯 Next Round Target Forced to ${forced.toFixed(2)}x`, 'info');
                 } else {
                     showToast(data.message || 'Override failed', 'error');
                 }
@@ -369,9 +392,9 @@ fetch('http://localhost:3000/api/v1/predict')
                 // Live Stats Banner Grid
                 h('div', { key: 'stats-grid', style: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' } }, [
                     h('div', { key: 's1', className: 'feature-card', style: { border: '1px solid rgba(0, 240, 255, 0.3)' } }, [
-                        h('div', { key: 'l', style: { fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' } }, 'Live Scheduled Target'),
+                        h('div', { key: 'l', style: { fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' } }, `Live Scheduled Target (Round #${(gameState && gameState.roundId) || '---'})`),
                         h('div', { key: 'v', style: { fontSize: '2.5rem', fontWeight: '800', color: '#00f0ff', fontFamily: 'JetBrains Mono, monospace', margin: '4px 0' } }, `${parseFloat((gameState && gameState.targetCrashMultiplier) || targetMultiplier || 2.00).toFixed(2)}x`),
-                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: gameState && gameState.status === 'FLYING' ? '#10b981' : '#00f0ff' } }, gameState && gameState.status === 'FLYING' ? `Flying: ${parseFloat(gameState.currentMultiplier || 1.00).toFixed(2)}x` : `Round #${(gameState && gameState.roundId) || 1001}`)
+                        h('div', { key: 'sub', style: { fontSize: '0.78rem', color: gameState && gameState.status === 'FLYING' ? '#10b981' : '#00f0ff' } }, gameState && gameState.status === 'FLYING' ? `Flying Now: ${parseFloat(gameState.currentMultiplier || 1.00).toFixed(2)}x` : gameState && gameState.status === 'WAITING' ? `Waiting Round: ${gameState.countdownSeconds || 5}s` : `Round #${(gameState && gameState.roundId) || 1001}`)
                     ]),
 
                     h('div', { key: 's2', className: 'feature-card' }, [
@@ -746,7 +769,7 @@ fetch('http://localhost:3000/api/v1/predict')
             return 'home';
         });
 
-        const [adminSecret, setAdminSecret] = useState('admin123');
+        const [adminSecret, setAdminSecret] = useState(() => sessionStorage.getItem('aviator_admin_secret') || 'admin123');
         const [isConnected, setIsConnected] = useState(false);
         const [toast, setToast] = useState(null);
 
@@ -783,8 +806,14 @@ fetch('http://localhost:3000/api/v1/predict')
             const socket = window.io ? window.io() : null;
             if (!socket) return;
 
+            const authenticateAdmin = () => {
+                const pass = adminSecret || sessionStorage.getItem('aviator_admin_secret') || 'admin123';
+                socket.emit('admin_connect', pass);
+            };
+
             socket.on('connect', () => {
                 setIsConnected(true);
+                authenticateAdmin();
             });
 
             socket.on('disconnect', () => {
@@ -828,24 +857,54 @@ fetch('http://localhost:3000/api/v1/predict')
                         currentMultiplier: d.finalMultiplier,
                         roundId: d.roundId
                     }));
-                    if (d.roundHistory) {
-                        // refresh target for next round when available
-                    }
                 }
             });
 
             socket.on('game_state', handleState);
-            socket.on('admin_stats_update', (d) => {
-                if (d && d.gameState && d.gameState.targetCrashMultiplier) {
-                    setTargetMultiplier(d.gameState.targetCrashMultiplier);
-                    setGameState(d.gameState);
+
+            socket.on('admin_game_state', (data) => {
+                if (data) {
+                    setGameState(prev => ({ ...(prev || {}), ...data }));
+                    if (data.targetCrashMultiplier) {
+                        setTargetMultiplier(data.targetCrashMultiplier);
+                    }
                 }
             });
+
+            socket.on('admin_countdown', (data) => {
+                if (data) {
+                    setGameState(prev => ({
+                        ...(prev || {}),
+                        roundId: data.roundId,
+                        countdownSeconds: data.countdownSeconds,
+                        targetCrashMultiplier: data.targetCrashMultiplier || (prev && prev.targetCrashMultiplier)
+                    }));
+                    if (data.targetCrashMultiplier) {
+                        setTargetMultiplier(data.targetCrashMultiplier);
+                    }
+                }
+            });
+
+            socket.on('admin_stats_update', (d) => {
+                if (d) {
+                    const t = d.targetCrashMultiplier || (d.gameState && d.gameState.targetCrashMultiplier);
+                    if (t) setTargetMultiplier(t);
+                    if (d.gameState) {
+                        setGameState(prev => ({ ...(prev || {}), ...d.gameState }));
+                    } else {
+                        setGameState(prev => ({ ...(prev || {}), ...d }));
+                    }
+                }
+            });
+
+            if (socket.connected) {
+                authenticateAdmin();
+            }
 
             return () => {
                 socket.disconnect();
             };
-        }, []);
+        }, [adminSecret]);
 
         const fetchActiveSessions = () => {
             fetch('/api/admin/sessions', { headers: { 'x-admin-password': adminSecret } })
@@ -912,7 +971,7 @@ fetch('http://localhost:3000/api/v1/predict')
             
             h('main', { key: 'main', style: { flex: 1 } }, [
                 activeRoute === 'home' && h(HomePage, { key: 'home', setActiveRoute: handleNavigate, targetMultiplier }),
-                activeRoute === 'admin' && h(AdminPage, { key: 'admin', adminSecret, setAdminSecret, showToast, targetMultiplier, gameState, activeBets, activeSessions, fetchActiveSessions, contactMessages, fetchContactMessages, apiKeys, fetchApiKeys }),
+                activeRoute === 'admin' && h(AdminPage, { key: 'admin', adminSecret, setAdminSecret, showToast, targetMultiplier, setTargetMultiplier, gameState, setGameState, activeBets, activeSessions, fetchActiveSessions, contactMessages, fetchContactMessages, apiKeys, fetchApiKeys }),
                 activeRoute === 'docs' && h(DocsPage, { key: 'docs', showToast }),
                 activeRoute === 'contact' && h(ContactPage, { key: 'cnt', showToast }),
                 activeRoute === 'dashboard' && h(DashboardPage, { key: 'dash' })

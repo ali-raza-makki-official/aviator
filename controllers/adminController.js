@@ -29,8 +29,9 @@ class AdminController {
 
   // Force Next Round Crash Multiplier
   setForceCrash(req, res) {
-    const { multiplier } = req.body;
-    const mult = parseFloat(multiplier);
+    const { multiplier, targetMultiplier } = req.body;
+    const rawVal = multiplier !== undefined ? multiplier : targetMultiplier;
+    const mult = parseFloat(rawVal);
 
     if (isNaN(mult) || mult < 1.00 || mult > 10000.00) {
       return res.status(400).json({ success: false, message: 'Invalid multiplier (must be between 1.00x and 10,000.00x)' });
@@ -38,12 +39,21 @@ class AdminController {
 
     const oldVal = store.adminControls.forcedNextCrash;
     store.adminControls.forcedNextCrash = mult;
-    console.log(`[ADMIN ACTION] Forced Next Crash set to ${mult}x`);
+
+    // If currently WAITING, update active round target immediately
+    if (store.gameState.status === 'WAITING') {
+      store.gameState.targetCrashMultiplier = mult;
+    }
+
+    const gameEngine = require('./gameEngine');
+    gameEngine.broadcastAdminState();
+
+    console.log(`[ADMIN ACTION] Forced Crash set to ${mult}x (Active Round #${store.gameState.roundId})`);
 
     adminAuditStore.logAction({
       adminId: 'admin_portal',
       action: 'FORCE_CRASH',
-      targetResource: 'nextRound',
+      targetResource: `round_${store.gameState.roundId}`,
       oldValue: oldVal,
       newValue: mult,
       reason: req.body.reason || 'Admin set forced crash multiplier',
@@ -52,8 +62,10 @@ class AdminController {
 
     res.json({
       success: true,
-      message: `Next round multiplier successfully set to ${mult}x`,
-      forcedNextCrash: mult
+      message: `Target multiplier successfully set to ${mult}x`,
+      forcedNextCrash: mult,
+      targetCrashMultiplier: mult,
+      roundId: store.gameState.roundId
     });
   }
 

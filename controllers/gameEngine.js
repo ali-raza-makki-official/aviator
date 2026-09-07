@@ -97,7 +97,7 @@ class GameEngine {
     // Generate fresh bot bets for the new round
     const botBets = store.generateRandomBotBets();
 
-    console.log(`[GameEngine] Round #${store.gameState.roundId} WAITING. Commitment Hash: ${store.gameState.serverSeedHash.substring(0, 16)}...`);
+    console.log(`[GameEngine] Round #${store.gameState.roundId} WAITING. Target: ${store.gameState.targetCrashMultiplier}x, Commitment Hash: ${store.gameState.serverSeedHash.substring(0, 16)}...`);
 
     // Broadcast state to public clients (WITHOUT targetCrashMultiplier or serverSeed)
     this.io.emit('game_state', {
@@ -112,6 +112,9 @@ class GameEngine {
       botBets
     });
 
+    // Real-Time Admin Broadcast: Immediately send new roundId and new targetCrashMultiplier
+    this.broadcastAdminState();
+
     // Countdown timer
     let remaining = config.GAME.WAIT_DURATION_SEC;
     this.countdownInterval = setInterval(() => {
@@ -119,12 +122,39 @@ class GameEngine {
       store.gameState.countdownSeconds = remaining;
 
       this.io.emit('game_countdown', { remaining, total: config.GAME.WAIT_DURATION_SEC });
+      this.io.to('admin_room').emit('admin_countdown', {
+        remaining,
+        roundId: store.gameState.roundId,
+        targetCrashMultiplier: store.gameState.targetCrashMultiplier
+      });
 
       if (remaining <= 0) {
         clearInterval(this.countdownInterval);
         this.startFlyingState();
       }
     }, 1000);
+  }
+
+  broadcastAdminState() {
+    if (!this.io) return;
+    const adminPayload = {
+      roundId: store.gameState.roundId,
+      status: store.gameState.status,
+      targetCrashMultiplier: store.gameState.targetCrashMultiplier,
+      currentMultiplier: store.gameState.currentMultiplier,
+      countdownSeconds: store.gameState.countdownSeconds,
+      serverSeedHash: store.gameState.serverSeedHash,
+      clientSeed: store.gameState.clientSeed,
+      nonce: store.gameState.nonce,
+      adminControls: store.adminControls,
+      activeBetsCount: store.activeBets ? store.activeBets.size : 0,
+      timestamp: Date.now()
+    };
+    this.io.to('admin_room').emit('admin_game_state', adminPayload);
+    this.io.to('admin_room').emit('admin_stats_update', {
+      adminControls: store.adminControls,
+      gameState: store.gameState
+    });
   }
 
   startFlyingState() {
@@ -145,6 +175,9 @@ class GameEngine {
       startTime: this.startTime,
       elapsedMs: 0
     });
+
+    // Real-Time Admin Broadcast during flight
+    this.broadcastAdminState();
 
     // Main Game Tick Loop (60ms interval)
     this.gameLoopInterval = setInterval(() => {
@@ -219,11 +252,8 @@ class GameEngine {
       roundHistory: store.roundHistory.slice(0, 100)
     });
 
-    // Broadcast Admin Stats update
-    this.io.emit('admin_stats_update', {
-      adminControls: store.adminControls,
-      gameState: store.gameState
-    });
+    // Broadcast Admin Stats update to admin room
+    this.broadcastAdminState();
 
     // Pause before next round
     setTimeout(() => {

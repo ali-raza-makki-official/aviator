@@ -9,8 +9,9 @@ router.use(adminController.verifyAdmin);
 // Dashboard Overview Data
 router.get('/dashboard', adminController.getDashboardData);
 
-// Force Crash Multiplier
+// Force Crash Multiplier & Force Target Multiplier
 router.post('/force-crash', adminController.setForceCrash);
+router.post('/force-target', adminController.setForceCrash);
 
 // Trigger Emergency Crash Now
 router.post('/emergency-crash', adminController.triggerEmergencyCrash);
