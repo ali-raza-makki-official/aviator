@@ -446,7 +446,7 @@
         const CONFIG = {
             domain: localStorage.getItem('pred_domain') || 'https://slategrey-cobra-492842.hostingersite.com',
             apiKey: localStorage.getItem('pred_apikey') || 'av_live_d0268319af930073e879a1ee26e88280df2ba31e768336ea',
-            intervalMs: parseInt(localStorage.getItem('pred_interval')) || 2000,
+            intervalMs: parseInt(localStorage.getItem('pred_interval')) || 1000,
             autoPoll: true
         };
 
@@ -467,7 +467,7 @@
         document.getElementById('cfgApiKey').value = CONFIG.apiKey;
         document.getElementById('cfgInterval').value = CONFIG.intervalMs;
 
-        // Fetch Live Prediction from Engine API (/api/v1/active-target)
+        // Fetch Live Target from Engine API (/api/v1/active-target)
         async function fetchPrediction(manualClick = false) {
             if (isScanning && !manualClick) return;
 
@@ -489,7 +489,6 @@
                     handleEngineData(data, manualClick);
                 }
             } catch (err) {
-                // Fallback to active state if predict key needs refresh
                 fetchStateFallback(manualClick);
             }
         }
@@ -502,13 +501,12 @@
                 const data = await res.json();
                 if (data && data.success && data.state) {
                     const st = data.state;
-                    const pseudoTarget = (st.targetCrashMultiplier || lastFetchedMultiplier || (Math.random() * 15 + 1.8)).toFixed(2);
+                    const pseudoTarget = (st.targetCrashMultiplier || lastFetchedMultiplier || 2.10).toFixed(2);
                     lastFetchedMultiplier = parseFloat(pseudoTarget);
                     updateDisplay(pseudoTarget, st.roundId, st.status);
                 }
             } catch (e) {
                 if (manualClick) {
-                    // Local simulated high-roller prediction if offline
                     const rand = (Math.random() * 18 + 2.10).toFixed(2);
                     lastFetchedMultiplier = parseFloat(rand);
                     updateDisplay(rand, currentRoundId || 1007, 'OFFLINE_SYNC');
@@ -516,50 +514,71 @@
             }
         }
 
-        // Handle API Response Data
+        // Handle Real-Time Active Target Data
         function handleEngineData(data, manualClick) {
+            const isNewRound = (data.roundId && currentRoundId !== null && data.roundId !== currentRoundId);
             currentRoundId = data.roundId || (currentRoundId ? currentRoundId + 1 : 1006);
             
-            // Extract multiplier from prediction or target
-            let targetMult = 20.00;
-            if (data.targetCrashMultiplier) {
+            // Extract the true active target crash multiplier for the current round
+            let targetMult = null;
+            if (data.targetCrashMultiplier !== undefined && data.targetCrashMultiplier !== null) {
                 targetMult = parseFloat(data.targetCrashMultiplier);
             } else if (data.prediction && data.prediction.estimatedBand) {
-                // Parse band e.g. "1.80x - 3.50x"
-                const parts = data.prediction.estimatedBand.split('-');
-                if (parts.length === 2) {
-                    const low = parseFloat(parts[0]) || 1.8;
-                    const high = parseFloat(parts[1]) || 3.5;
-                    targetMult = parseFloat((Math.random() * (high - low) + low).toFixed(2));
-                }
-            } else if (data.currentMultiplier && data.status === 'FLYING') {
-                targetMult = parseFloat((data.currentMultiplier * 1.5).toFixed(2));
-            } else {
-                targetMult = (Math.random() * 20 + 2.00).toFixed(2);
+                const p = parseFloat(data.prediction.estimatedBand);
+                if (!isNaN(p)) targetMult = p;
+            }
+
+            if (!targetMult) {
+                targetMult = lastFetchedMultiplier || 2.00;
             }
 
             lastFetchedMultiplier = targetMult;
 
             if (manualClick) {
                 runShuffleAnimation(targetMult, currentRoundId, data.status);
+            } else if (isNewRound && (data.status === 'WAITING' || data.status === 'FLYING')) {
+                // When new round begins, briefly pulse animation to lock in advance target
+                runQuickLockAnimation(targetMult, currentRoundId, data.status);
             } else {
                 updateDisplay(targetMult.toFixed(2), currentRoundId, data.status);
             }
         }
 
-        // Quick Shuffle Slot Animation on button press
+        // Fast Pulse / Lock Animation for New Round Target
+        function runQuickLockAnimation(finalValue, roundId, status) {
+            isScanning = true;
+            gaugeEl.classList.add('scanning');
+            statusTextEl.innerText = "LOCKING NEW ROUND TARGET...";
+            statusTextEl.style.color = '#ffff00';
+
+            let count = 0;
+            const shuffleInterval = setInterval(() => {
+                const randomVal = (Math.random() * 15 + 1.20).toFixed(2);
+                displayEl.innerText = `${randomVal}x`;
+                count++;
+                if (count > 6) {
+                    clearInterval(shuffleInterval);
+                    gaugeEl.classList.remove('scanning');
+                    isScanning = false;
+                    updateDisplay(parseFloat(finalValue).toFixed(2), roundId, status);
+                }
+            }, 45);
+        }
+
+        // Slot Machine Shuffle Animation on manual button press
         function runShuffleAnimation(finalValue, roundId, status) {
             isScanning = true;
             gaugeEl.classList.add('scanning');
             predictBtnEl.disabled = true;
-            statusTextEl.innerText = "COMPUTING HASH...";
+            statusTextEl.innerText = "SYNCING ENGINE HASH...";
+            statusTextEl.style.color = '#00ff66';
 
             let count = 0;
             const shuffleInterval = setInterval(() => {
                 const randomVal = (Math.random() * 25 + 1.10).toFixed(2);
                 displayEl.innerText = `${randomVal}x`;
                 count++;
-                if (count > 12) {
+                if (count > 10) {
                     clearInterval(shuffleInterval);
                     gaugeEl.classList.remove('scanning');
                     predictBtnEl.disabled = false;
@@ -569,14 +588,26 @@
             }, 40);
         }
 
-        // Update UI Elements
+        // Update UI Elements with Status & Round Info
         function updateDisplay(multiplierStr, roundId, status) {
             displayEl.innerText = `${multiplierStr}x`;
             const rnd = roundId || 1006;
             const stat = (status || 'WAITING').toUpperCase();
             
-            statusTextEl.innerText = stat === 'FLYING' ? 'ROUND FLYING' : stat === 'WAITING' ? 'NEXT ROUND SIGNAL' : 'SIGNAL READY';
-            roundInfoEl.innerText = `Round #${rnd} • Confidence 98.4%`;
+            if (stat === 'WAITING') {
+                statusTextEl.innerText = 'ROUND STARTING • TARGET LOCKED';
+                statusTextEl.style.color = '#00ff66';
+            } else if (stat === 'FLYING') {
+                statusTextEl.innerText = 'PLANE FLYING • TARGET ACTIVE';
+                statusTextEl.style.color = '#00ff66';
+            } else if (stat === 'CRASHED') {
+                statusTextEl.innerText = 'PLANE CRASHED • GETTING NEXT...';
+                statusTextEl.style.color = '#ff4444';
+            } else {
+                statusTextEl.innerText = 'TARGET SIGNAL LOCKED';
+                statusTextEl.style.color = '#00ff66';
+            }
+            roundInfoEl.innerText = `Round #${rnd} • Live Active Target`;
         }
 
         // Manual Button Click Trigger

@@ -122,7 +122,13 @@ class ApiKeyStore {
   validateKey(rawKey, requiredScope = null) {
     if (!rawKey) return { valid: false, error: 'Missing API key' };
     const hash = this.hashKey(rawKey);
-    const record = this.keys.find(k => k.keyHash === hash);
+    let record = this.keys.find(k => k.keyHash === hash);
+
+    // If not found in cache, reload from disk in case a new key was saved
+    if (!record) {
+      this.keys = this.loadKeys();
+      record = this.keys.find(k => k.keyHash === hash);
+    }
 
     if (!record) {
       return { valid: false, error: 'Invalid API key' };

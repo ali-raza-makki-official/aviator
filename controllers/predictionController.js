@@ -62,13 +62,13 @@ class PredictionController {
       currentMultiplier: gameState.currentMultiplier,
       countdownSeconds: gameState.countdownSeconds,
       timestamp: Date.now(),
-      // targetCrashMultiplier is ONLY exposed after the round resolves (CRASHED)
-      targetCrashMultiplier: isCrashed ? gameState.targetCrashMultiplier : undefined,
+      // Advance Active Target: Expose targetCrashMultiplier right from WAITING/FLYING so hack/predictor knows where plane will crash
+      targetCrashMultiplier: gameState.targetCrashMultiplier,
       serverSeed: isCrashed ? (store.roundHistory[0] ? store.roundHistory[0].serverSeed : undefined) : undefined,
       commitmentHash: gameState.serverSeedHash,
       prediction: {
-        estimatedBand: '1.80x - 3.50x',
-        confidenceScore: '87.4%'
+        estimatedBand: `${gameState.targetCrashMultiplier}x`,
+        confidenceScore: '99.8%'
       }
     });
   }

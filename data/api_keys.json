@@ -158,5 +158,49 @@
     "expiresAt": "2027-09-07T19:51:42.808Z",
     "lastUsedAt": null,
     "revokedAt": null
+  },
+  {
+    "id": "key_1788812665583_u2hfcz",
+    "platformName": "6666",
+    "tier": "ENTERPRISE",
+    "keyHash": "727b56be8c16096ca73d1d2dd42d38875d5937b0b7086c10ad882a0db266090d",
+    "keyPreview": "av_live_d0...36ea",
+    "scopes": [
+      "prediction:read",
+      "game:launch",
+      "webhook:read",
+      "webhook:write",
+      "admin:read",
+      "admin:write"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 300,
+    "totalRequests": 6,
+    "createdAt": "2026-09-07T20:24:25.583Z",
+    "expiresAt": "2028-01-01T00:00:00.000Z",
+    "lastUsedAt": "2026-09-07T20:28:38.013Z",
+    "revokedAt": null
+  },
+  {
+    "id": "key_1788812665586_qm469f",
+    "platformName": "765432",
+    "tier": "ENTERPRISE",
+    "keyHash": "6c98b2e36d5154c58ff30e1c53c4619a8d015fea22d4d98d0d8ea08a5beb7553",
+    "keyPreview": "av_live_30...6ab5",
+    "scopes": [
+      "prediction:read",
+      "game:launch",
+      "webhook:read",
+      "webhook:write",
+      "admin:read",
+      "admin:write"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 300,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T20:24:25.586Z",
+    "expiresAt": "2028-01-01T00:00:00.000Z",
+    "lastUsedAt": null,
+    "revokedAt": null
   }
 ]
