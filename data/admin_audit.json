@@ -1,5 +1,195 @@
 [
   {
+    "auditId": "audit_1788809584922_a010500f",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788809584920_9ae2ea37",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "TestAggregatorMaster",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for TestAggregatorMaster",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788809584923",
+    "timestamp": 1788809584923,
+    "createdAt": "2026-09-07T19:33:04.923Z"
+  },
+  {
+    "auditId": "audit_1788809584910_0e680dd8",
+    "adminId": "admin_portal",
+    "action": "FORCE_CRASH",
+    "targetResource": "round_1008",
+    "oldValue": null,
+    "newValue": 5.55,
+    "reason": "Admin set forced crash multiplier",
+    "ip": "::1",
+    "reqId": "req_1788809584911",
+    "timestamp": 1788809584911,
+    "createdAt": "2026-09-07T19:33:04.911Z"
+  },
+  {
+    "auditId": "audit_1788809584899_74819882",
+    "adminId": "admin_portal",
+    "action": "CONFIG_UPDATE",
+    "targetResource": "gameConfig",
+    "oldValue": {
+      "rtpPercent": 96,
+      "minCrashMultiplier": 1.05,
+      "maxCrashMultiplier": 250
+    },
+    "newValue": {
+      "rtpPercent": 96,
+      "houseEdge": 0.03,
+      "minCrashMultiplier": 1.05,
+      "maxCrashMultiplier": 250
+    },
+    "reason": "Admin updated RTP & Multiplier range settings",
+    "ip": "::1",
+    "reqId": "req_1788809584899",
+    "timestamp": 1788809584899,
+    "createdAt": "2026-09-07T19:33:04.899Z"
+  },
+  {
+    "auditId": "audit_1788809566893_87d73066",
+    "adminId": "admin_portal",
+    "action": "FORCE_CRASH",
+    "targetResource": "round_1007",
+    "oldValue": null,
+    "newValue": 8.88,
+    "reason": "Admin set forced crash multiplier",
+    "ip": "::1",
+    "reqId": "req_1788809566893",
+    "timestamp": 1788809566893,
+    "createdAt": "2026-09-07T19:32:46.893Z"
+  },
+  {
+    "auditId": "audit_1788809560960_7fd35f30",
+    "adminId": "admin_portal",
+    "action": "API_KEY_REVOKED",
+    "targetResource": "key_1788809560923_30ae06b9",
+    "oldValue": null,
+    "newValue": null,
+    "reason": "Security Audit Test Revoke",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788809560960",
+    "timestamp": 1788809560960,
+    "createdAt": "2026-09-07T19:32:40.960Z"
+  },
+  {
+    "auditId": "audit_1788809560950_6c88333b",
+    "adminId": "system_security",
+    "action": "UNAUTHORIZED_SCOPE_ATTEMPT",
+    "targetResource": "/api/v1/game/launch?user=test_player",
+    "oldValue": null,
+    "newValue": null,
+    "reason": "API key lacked required scope: 'game:launch'",
+    "ip": "::1",
+    "reqId": "req_1788809560950",
+    "timestamp": 1788809560950,
+    "createdAt": "2026-09-07T19:32:40.950Z"
+  },
+  {
+    "auditId": "audit_1788809560925_aa3b4203",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788809560923_30ae06b9",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "Test Prediction Partner",
+      "tier": "STANDARD",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for Test Prediction Partner",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788809560925",
+    "timestamp": 1788809560925,
+    "createdAt": "2026-09-07T19:32:40.925Z"
+  },
+  {
+    "auditId": "audit_1788809503997_538f1564",
+    "adminId": "admin_portal",
+    "action": "API_KEY_CREATED",
+    "targetResource": "key_1788809503994_19f7a625",
+    "oldValue": null,
+    "newValue": {
+      "platformName": "TestAggregatorMaster",
+      "scopes": [
+        "prediction:read"
+      ]
+    },
+    "reason": "New API key provisioned for TestAggregatorMaster",
+    "ip": "127.0.0.1",
+    "reqId": "req_1788809503997",
+    "timestamp": 1788809503997,
+    "createdAt": "2026-09-07T19:31:43.997Z"
+  },
+  {
+    "auditId": "audit_1788809503985_1d494b79",
+    "adminId": "admin_portal",
+    "action": "FORCE_CRASH",
+    "targetResource": "round_1003",
+    "oldValue": null,
+    "newValue": 5.55,
+    "reason": "Admin set forced crash multiplier",
+    "ip": "::1",
+    "reqId": "req_1788809503985",
+    "timestamp": 1788809503985,
+    "createdAt": "2026-09-07T19:31:43.985Z"
+  },
+  {
+    "auditId": "audit_1788809503971_63fcc7e1",
+    "adminId": "admin_portal",
+    "action": "CONFIG_UPDATE",
+    "targetResource": "gameConfig",
+    "oldValue": {
+      "rtpPercent": 96,
+      "minCrashMultiplier": 1,
+      "maxCrashMultiplier": 250
+    },
+    "newValue": {
+      "rtpPercent": 96,
+      "houseEdge": 0.03,
+      "minCrashMultiplier": 1.05,
+      "maxCrashMultiplier": 250
+    },
+    "reason": "Admin updated RTP & Multiplier range settings",
+    "ip": "::1",
+    "reqId": "req_1788809503971",
+    "timestamp": 1788809503971,
+    "createdAt": "2026-09-07T19:31:43.971Z"
+  },
+  {
+    "auditId": "audit_1788808879188_4c33b8a2",
+    "adminId": "admin_portal",
+    "action": "FORCE_CRASH",
+    "targetResource": "round_1004",
+    "oldValue": null,
+    "newValue": 8.88,
+    "reason": "Admin set forced crash multiplier",
+    "ip": "::1",
+    "reqId": "req_1788808879189",
+    "timestamp": 1788808879189,
+    "createdAt": "2026-09-07T19:21:19.189Z"
+  },
+  {
+    "auditId": "audit_1788808848310_7adadf26",
+    "adminId": "admin_portal",
+    "action": "FORCE_CRASH",
+    "targetResource": "round_1003",
+    "oldValue": null,
+    "newValue": 8.88,
+    "reason": "Admin set forced crash multiplier",
+    "ip": "::1",
+    "reqId": "req_1788808848310",
+    "timestamp": 1788808848310,
+    "createdAt": "2026-09-07T19:20:48.310Z"
+  },
+  {
     "auditId": "audit_1788776645064_5c3281a9",
     "adminId": "admin_portal",
     "action": "BALANCE_ADJUSTMENT",

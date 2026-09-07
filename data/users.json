@@ -9,7 +9,7 @@
     "isDemo": true,
     "totalBet": 0,
     "totalWon": 0,
-    "createdAt": 1788776656861
+    "createdAt": 1788809560858
   },
   {
     "id": "test_user_777",
@@ -21,7 +21,7 @@
     "isDemo": false,
     "totalBet": 0,
     "totalWon": 0,
-    "createdAt": 1788776656870
+    "createdAt": 1788809560868
   },
   {
     "id": "audit_user_1788775335764",
@@ -708,6 +708,114 @@
     "createdAt": 1788776539921
   },
   {
+    "id": "audit_admin_1788776645048",
+    "username": "AdminAdjustedUser",
+    "phone": "+923000000000",
+    "balance": 1500,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 0,
+    "totalWon": 0,
+    "createdAt": 1788776645048
+  },
+  {
+    "id": "dup_user_1788809537903",
+    "username": "DupTester",
+    "phone": "+923000000000",
+    "balance": 400,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 100,
+    "totalWon": 0,
+    "createdAt": 1788809537903
+  },
+  {
+    "id": "rapid_same_1788809537931",
+    "username": "RapidSameTester",
+    "phone": "+923000000000",
+    "balance": 400,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 100,
+    "totalWon": 0,
+    "createdAt": 1788809537931
+  },
+  {
+    "id": "diff_slots_1788809537952",
+    "username": "DiffSlotTester",
+    "phone": "+923000000000",
+    "balance": 250,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 250,
+    "totalWon": 0,
+    "createdAt": 1788809537952
+  },
+  {
+    "id": "insuf_user_1788809537986",
+    "username": "InsufTester",
+    "phone": "+923000000000",
+    "balance": 80,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 0,
+    "totalWon": 0,
+    "createdAt": 1788809537986
+  },
+  {
+    "id": "crash_user_1788809537999",
+    "username": "CrashTester",
+    "phone": "+923000000000",
+    "balance": 500,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 0,
+    "totalWon": 0,
+    "createdAt": 1788809537999
+  },
+  {
+    "id": "seq_user_1788809538040",
+    "username": "SeqTester",
+    "phone": "+923000000000",
+    "balance": 400,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 100,
+    "totalWon": 0,
+    "createdAt": 1788809538040
+  },
+  {
+    "id": "cashout_user_1788809543744",
+    "username": "CashoutTester",
+    "phone": "+923000000000",
+    "balance": 10825,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 300,
+    "totalWon": 1125,
+    "createdAt": 1788809543744
+  },
+  {
+    "id": "timing_user_1788809549238",
+    "username": "TimingTester",
+    "phone": "+923000000000",
+    "balance": 4850,
+    "currency": "PKR",
+    "region": "PK",
+    "isDemo": false,
+    "totalBet": 150,
+    "totalWon": 0,
+    "createdAt": 1788809549238
+  },
+  {
     "id": "user_life_1",
     "username": "LifeTester",
     "phone": "+923000000000",
@@ -717,138 +825,18 @@
     "isDemo": false,
     "totalBet": 0,
     "totalWon": 0,
-    "createdAt": 1788776632237
+    "createdAt": 1788809560967
   },
   {
-    "id": "audit_user_1788776644979",
-    "username": "AuditUser",
+    "id": "test_master_1788809584860",
+    "username": "MasterTester",
     "phone": "+923000000000",
-    "balance": 650,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 100,
-    "totalWon": 250,
-    "createdAt": 1788776644979
-  },
-  {
-    "id": "idem_user_1788776645009",
-    "username": "IdemUser",
-    "phone": "+923000000000",
-    "balance": 350,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 50,
-    "totalWon": 100,
-    "createdAt": 1788776645009
-  },
-  {
-    "id": "concurrency_user_1788776645033",
-    "username": "ConcurrentPlayer",
-    "phone": "+923000000000",
-    "balance": 40,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 60,
-    "totalWon": 0,
-    "createdAt": 1788776645033
-  },
-  {
-    "id": "audit_admin_1788776645048",
-    "username": "AdminAdjustedUser",
-    "phone": "+923000000000",
-    "balance": 100,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 0,
-    "totalWon": 0,
-    "createdAt": 1788776645048
-  },
-  {
-    "id": "recovery_user_1788776645069",
-    "username": "CrashRecoveryUser",
-    "phone": "+923000000000",
-    "balance": 1200,
+    "balance": 1300,
     "currency": "PKR",
     "region": "PK",
     "isDemo": false,
     "totalBet": 200,
-    "totalWon": 600,
-    "createdAt": 1788776645069
-  },
-  {
-    "id": "dup_user_1788776656876",
-    "username": "DupTester",
-    "phone": "+923000000000",
-    "balance": 400,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 100,
-    "totalWon": 0,
-    "createdAt": 1788776656876
-  },
-  {
-    "id": "rapid_same_1788776656894",
-    "username": "RapidSameTester",
-    "phone": "+923000000000",
-    "balance": 400,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 100,
-    "totalWon": 0,
-    "createdAt": 1788776656894
-  },
-  {
-    "id": "diff_slots_1788776656910",
-    "username": "DiffSlotTester",
-    "phone": "+923000000000",
-    "balance": 250,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 250,
-    "totalWon": 0,
-    "createdAt": 1788776656910
-  },
-  {
-    "id": "insuf_user_1788776656935",
-    "username": "InsufTester",
-    "phone": "+923000000000",
-    "balance": 80,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 0,
-    "totalWon": 0,
-    "createdAt": 1788776656935
-  },
-  {
-    "id": "crash_user_1788776656944",
-    "username": "CrashTester",
-    "phone": "+923000000000",
-    "balance": 500,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 0,
-    "totalWon": 0,
-    "createdAt": 1788776656944
-  },
-  {
-    "id": "seq_user_1788776656965",
-    "username": "SeqTester",
-    "phone": "+923000000000",
-    "balance": 400,
-    "currency": "PKR",
-    "region": "PK",
-    "isDemo": false,
-    "totalBet": 100,
-    "totalWon": 0,
-    "createdAt": 1788776656965
+    "totalWon": 500,
+    "createdAt": 1788809584860
   }
 ]

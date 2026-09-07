@@ -15,10 +15,10 @@
     ],
     "status": "ACTIVE",
     "rateLimitPerMinute": 300,
-    "totalRequests": 1,
+    "totalRequests": 3,
     "createdAt": "2026-09-07T10:21:06.977Z",
     "expiresAt": "2027-09-07T10:21:06.977Z",
-    "lastUsedAt": "2026-09-07T10:24:24.911Z",
+    "lastUsedAt": "2026-09-07T19:33:04.808Z",
     "revokedAt": null
   },
   {
@@ -56,5 +56,56 @@
     "expiresAt": "2027-09-07T10:23:52.191Z",
     "lastUsedAt": "2026-09-07T10:23:52.213Z",
     "revokedAt": "2026-09-07T10:23:52.228Z"
+  },
+  {
+    "id": "key_1788809503994_19f7a625",
+    "platformName": "TestAggregatorMaster",
+    "tier": "STANDARD",
+    "keyHash": "2d208af50341b7346fa82e5287cd379046a1c469c1a9355cf4b7bca5fcd0d877",
+    "keyPreview": "av_live_20...c2b1",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T19:31:43.994Z",
+    "expiresAt": "2027-09-07T19:31:43.994Z",
+    "lastUsedAt": null,
+    "revokedAt": null
+  },
+  {
+    "id": "key_1788809560923_30ae06b9",
+    "platformName": "Test Prediction Partner",
+    "tier": "STANDARD",
+    "keyHash": "455963824fcb637b2eccd8003d8b3b78606464ba788ed4273dd7dcdb4d36d61b",
+    "keyPreview": "av_live_6c...501b",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "REVOKED",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 1,
+    "createdAt": "2026-09-07T19:32:40.923Z",
+    "expiresAt": "2027-09-07T19:32:40.923Z",
+    "lastUsedAt": "2026-09-07T19:32:40.944Z",
+    "revokedAt": "2026-09-07T19:32:40.957Z"
+  },
+  {
+    "id": "key_1788809584920_9ae2ea37",
+    "platformName": "TestAggregatorMaster",
+    "tier": "STANDARD",
+    "keyHash": "f573ab8602f0954b93eeb613ca27eded71ef93dc246a26c7f2dc492070fdee14",
+    "keyPreview": "av_live_d6...f86e",
+    "scopes": [
+      "prediction:read"
+    ],
+    "status": "ACTIVE",
+    "rateLimitPerMinute": 60,
+    "totalRequests": 0,
+    "createdAt": "2026-09-07T19:33:04.920Z",
+    "expiresAt": "2027-09-07T19:33:04.920Z",
+    "lastUsedAt": null,
+    "revokedAt": null
   }
 ]

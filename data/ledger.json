@@ -1304,52 +1304,22 @@
     }
   },
   {
-    "txId": "tx_init_1788776645072_2187a024",
-    "userId": "recovery_user_1788776645069",
-    "type": "INITIAL_BALANCE",
-    "amount": 800,
-    "balanceBefore": 0,
-    "balanceAfter": 800,
-    "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_recovery_user_1788776645069",
-    "timestamp": 1788776645072,
-    "metadata": {
-      "isDemo": false
-    }
-  },
-  {
-    "txId": "tx_1788776645076_c37b22fdc4a0",
-    "userId": "recovery_user_1788776645069",
+    "txId": "tx_1788792844994_ffd85e9d99a9",
+    "userId": "user_demo",
     "type": "BET",
-    "amount": -200,
-    "balanceBefore": 800,
-    "balanceAfter": 600,
-    "referenceId": "bet_6666_1788776645076_833af4a3",
-    "idempotencyKey": "bet_6666_recovery_user_1788776645069_bet1",
-    "timestamp": 1788776645076,
+    "amount": -16,
+    "balanceBefore": 30000,
+    "balanceAfter": 29984,
+    "referenceId": "bet_1735_1788792844994_4537c43e",
+    "idempotencyKey": "bet_1735_user_demo_bet1",
+    "timestamp": 1788792844994,
     "metadata": {
-      "roundId": 6666,
+      "roundId": 1735,
       "betSlot": "bet1"
     }
   },
   {
-    "txId": "tx_1788776645085_30345fed665a",
-    "userId": "recovery_user_1788776645069",
-    "type": "CASHOUT",
-    "amount": 600,
-    "balanceBefore": 600,
-    "balanceAfter": 1200,
-    "referenceId": "bet_6666_1788776645076_833af4a3",
-    "idempotencyKey": "cashout_6666_recovery_user_1788776645069_bet1",
-    "timestamp": 1788776645085,
-    "metadata": {
-      "roundId": 6666,
-      "betSlot": "bet1",
-      "multiplier": 3
-    }
-  },
-  {
-    "txId": "tx_init_1788776656864_6d4e09a4",
+    "txId": "tx_init_1788808801925_461b1619",
     "userId": "user_demo",
     "type": "INITIAL_BALANCE",
     "amount": 30000,
@@ -1357,13 +1327,13 @@
     "balanceAfter": 30000,
     "referenceId": "INITIAL_SEED",
     "idempotencyKey": "init_user_demo",
-    "timestamp": 1788776656864,
+    "timestamp": 1788808801926,
     "metadata": {
       "isDemo": true
     }
   },
   {
-    "txId": "tx_init_1788776656872_ad66632f",
+    "txId": "tx_init_1788808801934_b4ae4d39",
     "userId": "test_user_777",
     "type": "INITIAL_BALANCE",
     "amount": 2500,
@@ -1371,183 +1341,502 @@
     "balanceAfter": 2500,
     "referenceId": "INITIAL_SEED",
     "idempotencyKey": "init_test_user_777",
-    "timestamp": 1788776656872,
+    "timestamp": 1788808801934,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_init_1788776656878_5ecd6f9a",
-    "userId": "dup_user_1788776656876",
+    "txId": "tx_init_1788809481227_f3b9d2c2",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788809481228,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788809481249_c36ab10c",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788809481249,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809537891_8e96ecf9",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788809537892,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788809537900_680e7b70",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788809537900,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809537907_851179f5",
+    "userId": "dup_user_1788809537903",
     "type": "INITIAL_BALANCE",
     "amount": 500,
     "balanceBefore": 0,
     "balanceAfter": 500,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_dup_user_1788776656876",
-    "timestamp": 1788776656879,
+    "idempotencyKey": "init_dup_user_1788809537903",
+    "timestamp": 1788809537908,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_1788776656883_1c0f8fde50aa",
-    "userId": "dup_user_1788776656876",
+    "txId": "tx_1788809537914_4bd2afc861bc",
+    "userId": "dup_user_1788809537903",
     "type": "BET",
     "amount": -100,
     "balanceBefore": 500,
     "balanceAfter": 400,
-    "referenceId": "bet_5001_1788776656883_c50f33ae",
-    "idempotencyKey": "bet_5001_dup_user_1788776656876_bet1",
-    "timestamp": 1788776656883,
+    "referenceId": "bet_5001_1788809537913_91ffbd4b",
+    "idempotencyKey": "bet_5001_dup_user_1788809537903_bet1",
+    "timestamp": 1788809537914,
     "metadata": {
       "roundId": 5001,
       "betSlot": "bet1"
     }
   },
   {
-    "txId": "tx_init_1788776656897_812090d0",
-    "userId": "rapid_same_1788776656894",
+    "txId": "tx_init_1788809537934_524140ff",
+    "userId": "rapid_same_1788809537931",
     "type": "INITIAL_BALANCE",
     "amount": 500,
     "balanceBefore": 0,
     "balanceAfter": 500,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_rapid_same_1788776656894",
-    "timestamp": 1788776656897,
+    "idempotencyKey": "init_rapid_same_1788809537931",
+    "timestamp": 1788809537934,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_1788776656900_da3e4bbb5b68",
-    "userId": "rapid_same_1788776656894",
+    "txId": "tx_1788809537938_6f22317d0cae",
+    "userId": "rapid_same_1788809537931",
     "type": "BET",
     "amount": -100,
     "balanceBefore": 500,
     "balanceAfter": 400,
-    "referenceId": "bet_5002_1788776656900_cb2608ec",
-    "idempotencyKey": "bet_5002_rapid_same_1788776656894_bet1",
-    "timestamp": 1788776656900,
+    "referenceId": "bet_5002_1788809537938_37245eee",
+    "idempotencyKey": "bet_5002_rapid_same_1788809537931_bet1",
+    "timestamp": 1788809537938,
     "metadata": {
       "roundId": 5002,
       "betSlot": "bet1"
     }
   },
   {
-    "txId": "tx_init_1788776656913_0bb51825",
-    "userId": "diff_slots_1788776656910",
+    "txId": "tx_init_1788809537955_35cc4c33",
+    "userId": "diff_slots_1788809537952",
     "type": "INITIAL_BALANCE",
     "amount": 500,
     "balanceBefore": 0,
     "balanceAfter": 500,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_diff_slots_1788776656910",
-    "timestamp": 1788776656913,
+    "idempotencyKey": "init_diff_slots_1788809537952",
+    "timestamp": 1788809537956,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_1788776656916_e9a1180bf0a1",
-    "userId": "diff_slots_1788776656910",
+    "txId": "tx_1788809537960_8f5a3d2647a6",
+    "userId": "diff_slots_1788809537952",
     "type": "BET",
     "amount": -100,
     "balanceBefore": 500,
     "balanceAfter": 400,
-    "referenceId": "bet_5003_1788776656916_4ccf5542",
-    "idempotencyKey": "bet_5003_diff_slots_1788776656910_bet1",
-    "timestamp": 1788776656916,
+    "referenceId": "bet_5003_1788809537960_46a1aeb9",
+    "idempotencyKey": "bet_5003_diff_slots_1788809537952_bet1",
+    "timestamp": 1788809537960,
     "metadata": {
       "roundId": 5003,
       "betSlot": "bet1"
     }
   },
   {
-    "txId": "tx_1788776656924_bac6d0db2930",
-    "userId": "diff_slots_1788776656910",
+    "txId": "tx_1788809537971_173124a3c460",
+    "userId": "diff_slots_1788809537952",
     "type": "BET",
     "amount": -150,
     "balanceBefore": 400,
     "balanceAfter": 250,
-    "referenceId": "bet_5003_1788776656924_d3c4d67f",
-    "idempotencyKey": "bet_5003_diff_slots_1788776656910_bet2",
-    "timestamp": 1788776656924,
+    "referenceId": "bet_5003_1788809537971_828821ea",
+    "idempotencyKey": "bet_5003_diff_slots_1788809537952_bet2",
+    "timestamp": 1788809537971,
     "metadata": {
       "roundId": 5003,
       "betSlot": "bet2"
     }
   },
   {
-    "txId": "tx_init_1788776656938_950a3758",
-    "userId": "insuf_user_1788776656935",
+    "txId": "tx_init_1788809537990_35031040",
+    "userId": "insuf_user_1788809537986",
     "type": "INITIAL_BALANCE",
     "amount": 80,
     "balanceBefore": 0,
     "balanceAfter": 80,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_insuf_user_1788776656935",
-    "timestamp": 1788776656938,
+    "idempotencyKey": "init_insuf_user_1788809537986",
+    "timestamp": 1788809537990,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_init_1788776656947_e457c3a2",
-    "userId": "crash_user_1788776656944",
+    "txId": "tx_init_1788809538003_87fee28b",
+    "userId": "crash_user_1788809537999",
     "type": "INITIAL_BALANCE",
     "amount": 500,
     "balanceBefore": 0,
     "balanceAfter": 500,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_crash_user_1788776656944",
-    "timestamp": 1788776656947,
+    "idempotencyKey": "init_crash_user_1788809537999",
+    "timestamp": 1788809538003,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_init_1788776656967_3c0de6af",
-    "userId": "seq_user_1788776656965",
+    "txId": "tx_init_1788809538046_18ed67fa",
+    "userId": "seq_user_1788809538040",
     "type": "INITIAL_BALANCE",
     "amount": 500,
     "balanceBefore": 0,
     "balanceAfter": 500,
     "referenceId": "INITIAL_SEED",
-    "idempotencyKey": "init_seq_user_1788776656965",
-    "timestamp": 1788776656968,
+    "idempotencyKey": "init_seq_user_1788809538040",
+    "timestamp": 1788809538046,
     "metadata": {
       "isDemo": false
     }
   },
   {
-    "txId": "tx_1788776656970_7b58c3a3ee5f",
-    "userId": "seq_user_1788776656965",
+    "txId": "tx_1788809538053_ee154b1f1f2d",
+    "userId": "seq_user_1788809538040",
     "type": "BET",
     "amount": -50,
     "balanceBefore": 500,
     "balanceAfter": 450,
-    "referenceId": "bet_6001_1788776656970_0a6a02c0",
-    "idempotencyKey": "bet_6001_seq_user_1788776656965_bet1",
-    "timestamp": 1788776656970,
+    "referenceId": "bet_6001_1788809538053_3f464ec0",
+    "idempotencyKey": "bet_6001_seq_user_1788809538040_bet1",
+    "timestamp": 1788809538053,
     "metadata": {
       "roundId": 6001,
       "betSlot": "bet1"
     }
   },
   {
-    "txId": "tx_1788776656980_fdbc881283cc",
-    "userId": "seq_user_1788776656965",
+    "txId": "tx_1788809538073_0b6ce5539420",
+    "userId": "seq_user_1788809538040",
     "type": "BET",
     "amount": -50,
     "balanceBefore": 450,
     "balanceAfter": 400,
-    "referenceId": "bet_6002_1788776656980_aa68aa8d",
-    "idempotencyKey": "bet_6002_seq_user_1788776656965_bet1",
-    "timestamp": 1788776656980,
+    "referenceId": "bet_6002_1788809538073_e70019ed",
+    "idempotencyKey": "bet_6002_seq_user_1788809538040_bet1",
+    "timestamp": 1788809538073,
     "metadata": {
       "roundId": 6002,
       "betSlot": "bet1"
+    }
+  },
+  {
+    "txId": "tx_init_1788809543731_1ad79bad",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788809543732,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788809543740_c65c2b6b",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788809543740,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809543747_25d41f10",
+    "userId": "cashout_user_1788809543744",
+    "type": "INITIAL_BALANCE",
+    "amount": 10000,
+    "balanceBefore": 0,
+    "balanceAfter": 10000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_cashout_user_1788809543744",
+    "timestamp": 1788809543747,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_1788809543751_c57917346242",
+    "userId": "cashout_user_1788809543744",
+    "type": "BET",
+    "amount": -100,
+    "balanceBefore": 10000,
+    "balanceAfter": 9900,
+    "referenceId": "bet_1001_1788809543751_5c1e92d5",
+    "idempotencyKey": "bet_1001_cashout_user_1788809543744_bet1",
+    "timestamp": 1788809543751,
+    "metadata": {
+      "roundId": 1001,
+      "betSlot": "bet1"
+    }
+  },
+  {
+    "txId": "tx_1788809543762_fec13e098a25",
+    "userId": "cashout_user_1788809543744",
+    "type": "CASHOUT",
+    "amount": 325,
+    "balanceBefore": 9900,
+    "balanceAfter": 10225,
+    "referenceId": "bet_1001_1788809543751_5c1e92d5",
+    "idempotencyKey": "cashout_1001_cashout_user_1788809543744_bet1",
+    "timestamp": 1788809543762,
+    "metadata": {
+      "roundId": 1001,
+      "betSlot": "bet1",
+      "multiplier": 3.25
+    }
+  },
+  {
+    "txId": "tx_1788809543772_100889e65d75",
+    "userId": "cashout_user_1788809543744",
+    "type": "BET",
+    "amount": -200,
+    "balanceBefore": 10225,
+    "balanceAfter": 10025,
+    "referenceId": "bet_1002_1788809543772_fa3c87ab",
+    "idempotencyKey": "bet_1002_cashout_user_1788809543744_bet1",
+    "timestamp": 1788809543772,
+    "metadata": {
+      "roundId": 1002,
+      "betSlot": "bet1"
+    }
+  },
+  {
+    "txId": "tx_1788809543781_b344318566d8",
+    "userId": "cashout_user_1788809543744",
+    "type": "CASHOUT",
+    "amount": 800,
+    "balanceBefore": 10025,
+    "balanceAfter": 10825,
+    "referenceId": "bet_1002_1788809543772_fa3c87ab",
+    "idempotencyKey": "idem_race_0",
+    "timestamp": 1788809543782,
+    "metadata": {
+      "roundId": 1002,
+      "betSlot": "bet1",
+      "multiplier": 4
+    }
+  },
+  {
+    "txId": "tx_init_1788809549224_7148b45d",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788809549225,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788809549234_d7dd846a",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788809549234,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809549241_586a67ad",
+    "userId": "timing_user_1788809549238",
+    "type": "INITIAL_BALANCE",
+    "amount": 5000,
+    "balanceBefore": 0,
+    "balanceAfter": 5000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_timing_user_1788809549238",
+    "timestamp": 1788809549242,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_1788809549247_916681c1e854",
+    "userId": "timing_user_1788809549238",
+    "type": "BET",
+    "amount": -100,
+    "balanceBefore": 5000,
+    "balanceAfter": 4900,
+    "referenceId": "bet_1001_1788809549247_eb02ec98",
+    "idempotencyKey": "bet_1001_timing_user_1788809549238_bet1",
+    "timestamp": 1788809549247,
+    "metadata": {
+      "roundId": 1001,
+      "betSlot": "bet1"
+    }
+  },
+  {
+    "txId": "tx_1788809549258_a66ad638a4da",
+    "userId": "timing_user_1788809549238",
+    "type": "BET",
+    "amount": -50,
+    "balanceBefore": 4900,
+    "balanceAfter": 4850,
+    "referenceId": "bet_1001_1788809549258_d73a9764",
+    "idempotencyKey": "bet_1001_timing_user_1788809549238_bet2",
+    "timestamp": 1788809549258,
+    "metadata": {
+      "roundId": 1001,
+      "betSlot": "bet2"
+    }
+  },
+  {
+    "txId": "tx_init_1788809560863_ab03c664",
+    "userId": "user_demo",
+    "type": "INITIAL_BALANCE",
+    "amount": 30000,
+    "balanceBefore": 0,
+    "balanceAfter": 30000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_demo",
+    "timestamp": 1788809560863,
+    "metadata": {
+      "isDemo": true
+    }
+  },
+  {
+    "txId": "tx_init_1788809560871_364d4f4d",
+    "userId": "test_user_777",
+    "type": "INITIAL_BALANCE",
+    "amount": 2500,
+    "balanceBefore": 0,
+    "balanceAfter": 2500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_user_777",
+    "timestamp": 1788809560871,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809560970_4989efed",
+    "userId": "user_life_1",
+    "type": "INITIAL_BALANCE",
+    "amount": 500,
+    "balanceBefore": 0,
+    "balanceAfter": 500,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_user_life_1",
+    "timestamp": 1788809560970,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_init_1788809584863_7804670e",
+    "userId": "test_master_1788809584860",
+    "type": "INITIAL_BALANCE",
+    "amount": 1000,
+    "balanceBefore": 0,
+    "balanceAfter": 1000,
+    "referenceId": "INITIAL_SEED",
+    "idempotencyKey": "init_test_master_1788809584860",
+    "timestamp": 1788809584864,
+    "metadata": {
+      "isDemo": false
+    }
+  },
+  {
+    "txId": "tx_1788809584869_c4a6653ef234",
+    "userId": "test_master_1788809584860",
+    "type": "BET",
+    "amount": -200,
+    "balanceBefore": 1000,
+    "balanceAfter": 800,
+    "referenceId": "bet_9999_1788809584868_0bdd4573",
+    "idempotencyKey": "bet_9999_test_master_1788809584860_bet1",
+    "timestamp": 1788809584869,
+    "metadata": {
+      "roundId": 9999,
+      "betSlot": "bet1"
+    }
+  },
+  {
+    "txId": "tx_1788809584880_f8ffb8aafd53",
+    "userId": "test_master_1788809584860",
+    "type": "CASHOUT",
+    "amount": 500,
+    "balanceBefore": 800,
+    "balanceAfter": 1300,
+    "referenceId": "bet_9999_1788809584868_0bdd4573",
+    "idempotencyKey": "cashout_9999_test_master_1788809584860_bet1",
+    "timestamp": 1788809584880,
+    "metadata": {
+      "roundId": 9999,
+      "betSlot": "bet1",
+      "multiplier": 2.5
     }
   }
 ]
