@@ -107,21 +107,70 @@ app.use((req, res, next) => {
 app.all('*sentry*', (req, res) => res.status(200).send({}));
 app.all('*/api/10/envelope*', (req, res) => res.status(200).send({}));
 
-// Configured Allowed Origins
-const allowedAdminOrigins = (process.env.ADMIN_ALLOWED_ORIGINS || process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000').split(',').map(s => s.trim());
+// Configured Allowed Origins & Intelligent Dynamic Checker
+const isOriginAllowed = (origin, req) => {
+  // 1. Requests with no origin (same-origin, curl, server-to-server)
+  if (!origin) return true;
 
-const adminCors = cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedAdminOrigins.includes(origin)) {
-      return callback(null, true);
+  // 2. Allow if wildcard configured in environment
+  if (process.env.ADMIN_ALLOWED_ORIGINS === '*' || process.env.ALLOWED_ORIGINS === '*') {
+    return true;
+  }
+
+  // 3. Same-origin matching: if origin matches current host header (e.g. http://localhost:3000, https://yourdomain.com)
+  if (req && req.headers && req.headers.host) {
+    const host = req.headers.host;
+    if (origin === `http://${host}` || origin === `https://${host}`) {
+      return true;
     }
-    const err = new Error('CORS blocked: Origin not authorized for Admin operations');
-    err.status = 403;
-    return callback(err);
-  },
-  credentials: true
-});
+  }
+
+  // 4. Configured explicit origins from env
+  const configured = (process.env.ADMIN_ALLOWED_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+  if (configured.includes(origin)) {
+    return true;
+  }
+
+  // 5. Localhost & loopback with any port (e.g. 3000, 5000, 8080, etc.)
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+    return true;
+  }
+
+  // 6. Local area network IPs (e.g. 192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+  if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)) {
+    return true;
+  }
+
+  // 7. Common cloud deployment subdomains (Render, Railway, Vercel, Heroku)
+  if (/^https?:\/\/[a-zA-Z0-9-]+\.(onrender\.com|up\.railway\.app|vercel\.app|herokuapp\.com)(:\d+)?$/.test(origin)) {
+    return true;
+  }
+
+  return false;
+};
+
+const adminCors = (req, res, next) => {
+  const origin = req.headers.origin;
+  if (isOriginAllowed(origin, req)) {
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-admin-password,x-api-key');
+    }
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(204);
+    }
+    return next();
+  }
+
+  const err = new Error('CORS blocked: Origin not authorized for Admin operations');
+  err.status = 403;
+  return next(err);
+};
 
 // API Routes
 app.use('/api', apiRoutes);
