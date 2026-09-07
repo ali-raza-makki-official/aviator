@@ -467,13 +467,13 @@
         document.getElementById('cfgApiKey').value = CONFIG.apiKey;
         document.getElementById('cfgInterval').value = CONFIG.intervalMs;
 
-        // Fetch Live Prediction from Engine API
+        // Fetch Live Prediction from Engine API (/api/v1/active-target)
         async function fetchPrediction(manualClick = false) {
             if (isScanning && !manualClick) return;
 
             try {
                 const cleanDomain = CONFIG.domain.replace(/\/+$/, '');
-                const url = `${cleanDomain}/api/v1/predict?apiKey=${encodeURIComponent(CONFIG.apiKey)}`;
+                const url = `${cleanDomain}/api/v1/active-target?apiKey=${encodeURIComponent(CONFIG.apiKey)}`;
                 
                 const response = await fetch(url, {
                     method: 'GET',
